@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Masterify - Professional Audio Mastering{% endblock %}
+{% block title %}MASTERIFY - Drop The Beat, Elevate The Heat{% endblock %}
 
 {% block head %}
 <style>
@@ -10,7 +10,8 @@
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
-        height: 500px;
+        height: 90vh;
+        position: relative;
     }
     
     /* Hero section */
@@ -26,13 +27,27 @@
     
     /* Features section */
     .feature-icon {
-        background-color: rgba(99, 102, 241, 0.1);
-        border-radius: 9999px;
-        padding: 1rem;
+        background-color: #111111;
+        border: 1px solid #333333;
+        padding: 1.5rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #6366F1;
+        color: #ffffff;
+        width: 80px;
+        height: 80px;
+        position: relative;
+    }
+    
+    .feature-icon::after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ffffff;
+        z-index: -1;
     }
     
     /* How it works steps */
@@ -40,18 +55,39 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 2.5rem;
-        height: 2.5rem;
-        border-radius: 9999px;
-        background-color: #6366F1;
-        color: white;
+        width: 3rem;
+        height: 3rem;
+        background-color: #000000;
+        border: 2px solid #ffffff;
+        color: #ffffff;
         font-weight: bold;
-        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .step-number::after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ffffff;
+        z-index: -1;
     }
     
     /* Testimonials */
     .testimonial-card {
         position: relative;
+        border: 1px solid #333333;
+        background-color: #111111;
+        transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(255, 255, 255, 0.05);
     }
     
     .testimonial-card::before {
@@ -60,26 +96,79 @@
         top: -2rem;
         left: 1rem;
         font-size: 5rem;
-        color: rgba(99, 102, 241, 0.2);
+        color: rgba(255, 255, 255, 0.1);
         font-family: serif;
+    }
+    
+    .noise-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QMbDjkm5JGDkAAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAE5ElEQVRo3tWaz2ubVRzGP+97mjRNm7RNmqRJmrTpD2tbtV3a6TbGlE1Q9I8QhG2MMewPcCDMoTCGTrwIXhhMhCGyMTaGbad1P2Jnx9a0dWm7mab5/eP98eLkNSRv3vemb1OFHrj0vXyf5znP93nOew6iKAo+FpuEEOiahm0Y6LpO0/XYjscRQnTzEt25oCgKfliGqqpoMFzfp15bxHVdPwPpMYgQAl3TcGwbwzDQNI1apeJnhrCOZaRpG5qmYZsmpmn6NsGXZwjXAXSIrmnXbRyJRNB1nVp1EbflXvMyGm6L1HVtKCgC+r1XkiQajSZuq+UHCB8mQWo3wg31Oaqq4rrNJRD9DtLTDhmGgWVZ6LaNoeuoqrpiueuXZVnUqh6+Eeg3d0Ioio5l29i2jRIMoqgqjUaDZrMBnl3CcuLzOSMoio5pmpiWxcabNxONxnl/+jRaCDTd76YMQGAYBrplIYSEJII4joPruvwxN4dt2/xz9Sq247BUGGqBrFJBRVFxLBPTsghHwjy9bz/RSJRGo8EXZ89Rr9dxXRfXdZFlmXBtgcRoGmWVUwksy/r/NhSFdCrFjpEsz41PYNkWn56Z4Ye5OVzXRZZlJElClmUikTDbRrdRXpgn1q8gCsSyLaLRKLs6ILs6IM1mk9mZGaZnZmg0GsiyjKIoSJKE9Ni+/Rw6+DyGYfRtrrSHGxiGwa5cjtcOv0IsFqPVavH+Rx9z6bvLK7IjyzKRSIRXDr3ExUuXiEb7UIpJkoRhGLySz/PmG28Sj8dZWlri2PHj/HJtbgVEu8FVFIXh4SGq1aV+lWLXAUIXLnDkyBHenZggGAwiSRLHjr/H7MzMsj1rQYL31iutNvHhIeYXfuXTM2eQJGlZLVauxkpQvZY4Dy6/7NaOVnfdM9cuY2VZ5vz583x16eLyM/frvSsf9kAgQKFQYO6n66vAHg9aLZBoNMqD+/Hne/fYuiVNNpvl4MFnGBoa6upeHfWGRCLBlmQSx7ZXTa6LhX9JJZOMjY3x7BNPs3XrVnp1r47qUTwep1KtIIT02HVOFQqMjY2xI5dj9+7d65JpHdUjy7KQpHsZ0ekFpVKJQqHArvFxBgYG1i3TOgJRVZXlFfP++dXff+Ps2XPs3buXvXufWPcyoaMHRzAQeOQGt/+2b8/x4IED64boCCQYDNJsNJYn2OMF2Wz2VpEhIpEIrdadxZdvEoQkSRiGgSRJq1ZjrWcv3CQISSIUChEKhVZ5Qu86WLdGUBQFLaQRjcZQVW31UiOQTqfbP3yTQRAEEELg2A7xeILBoXsIBAL3j9VdgZdlmcHBQYaHMlh2+0DitXuwLIs79+8kHA4v+z3PQNq3MZlKkUylujqsOI5DIpEglUot++0tB2m/aSKRIJlIrFiBtSA3PnOrgdpbI51Ok0okOvbS5yDtLYQQgmQySSqVWj60ZL/rE+S+L5ckCoXCqqyQAX0Pchv0PrqmMTQ0xEg2SywaWwaJxWIMpNPLLtTPVnv7Sxm6rpPNZsnlcuTGx0mlB9quq2lkMplVxdJvXnsvZaRpGkIIhBDk83lGR0dRVRVF19F1nXQ6zUAmQyAQWPVP61cze/u7rqap2LbDwMAA27dvJxqNkslk1t2w9DvIsjtrGpFohGQySSaTWfM80y8gj+xCf2r1jeaZ9qbZvwrjF3FQVx/oAAAAAElFTkSuQmCC');
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .vhs-effect {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .vhs-effect::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        animation: vhs-glitch 10s infinite linear;
+        z-index: 5;
+        pointer-events: none;
+    }
+    
+    @keyframes vhs-glitch {
+        0% { top: -100px; }
+        10% { top: 300px; }
+        11% { top: -100px; }
+        29% { top: -100px; }
+        30% { top: 500px; }
+        31% { top: -100px; }
+        69% { top: -100px; }
+        70% { top: 400px; }
+        71% { top: -100px; }
+        100% { top: -100px; }
+    }
+    
+    .vinyl-pattern {
+        background-image: radial-gradient(circle, transparent 30%, #000000 30%, #000000 32%, transparent 32%), 
+                          radial-gradient(circle, #111111 60%, transparent 60%);
+        background-size: 8px 8px, 20px 20px;
+        background-position: 0 0, 10px 10px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero section with parallax -->
-<section class="hero parallax" style="background-image: url('https://pixabay.com/get/ge32a53812fd0c2bdc47762672c82310e9ec2f7cdaf7a58c642c6e5ae3d8e2d862c60a1bc8ef5d6215eb5989d20581c101fcb2cd772d650ebf51dd698468ec68e_1280.jpg');">
-    <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+<section class="hero parallax vhs-effect" style="background-image: url('https://pixabay.com/get/ge32a53812fd0c2bdc47762672c82310e9ec2f7cdaf7a58c642c6e5ae3d8e2d862c60a1bc8ef5d6215eb5989d20581c101fcb2cd772d650ebf51dd698468ec68e_1280.jpg');">
+    <div class="absolute inset-0 bg-black bg-opacity-80 z-0"></div>
+    <div class="noise-overlay"></div>
     <div class="container mx-auto px-4 h-full flex items-center hero-content">
-        <div class="max-w-3xl text-white">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Professional Audio Mastering Made Simple</h1>
-            <p class="text-xl mb-8">Transform your tracks with industry-standard mastering. One click, professional results.</p>
-            <div class="flex flex-col sm:flex-row gap-4">
-                <a href="/upload" class="btn-primary text-center px-8 py-3 rounded-md text-lg font-semibold">
-                    Try for Free
+        <div class="max-w-3xl text-white z-10">
+            <div class="slogan mb-4">
+                PROFESSIONAL SOUND UNLEASHED
+            </div>
+            <h1 class="rap-title glitch-effect">PULL UP YOUR TRACK<br>AND LET ME BRING<br>THE SAUCE</h1>
+            <p class="rap-subtitle">Turn your raw cuts into heavyweight champions. No studio required, just pure heat.</p>
+            <div class="flex flex-col sm:flex-row gap-6 mt-10">
+                <a href="/upload" class="btn-primary text-center px-8 py-4 text-lg font-bold">
+                    DROP YOUR TRACK
                 </a>
-                <a href="/pricing" class="btn-secondary text-center px-8 py-3 rounded-md text-lg font-semibold">
-                    View Pricing
+                <a href="/pricing" class="btn-secondary text-center px-8 py-4 text-lg font-bold">
+                    GET CREDITS
                 </a>
             </div>
         </div>
@@ -87,120 +176,127 @@
 </section>
 
 <!-- Features section -->
-<section class="py-16 bg-white">
+<section class="py-20 bg-black border-t border-gray-800">
     <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Masterify Your Sound</h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Professional audio mastering tools powered by intelligent algorithms that analyze your track and apply the perfect processing.</p>
+            <div class="slogan mb-4">HEAVYWEIGHT FEATURES</div>
+            <h2 class="rap-title mb-8">LEVEL UP<br>YOUR SOUND</h2>
+            <p class="rap-subtitle max-w-3xl mx-auto">Algorithms that hit harder than 808s. Your track gets analyzed and processed for maximum impact.</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div class="flex flex-col items-center text-center slide-up">
-                <div class="feature-icon text-3xl mb-6">
+            <div class="card p-8 slide-up">
+                <div class="feature-icon text-3xl mb-6 mx-auto">
                     <i class="fas fa-upload"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3">Easy Upload</h3>
-                <p class="text-gray-600">Simple drag and drop interface for your audio files. Supports WAV and MP3 formats.</p>
+                <h3 class="text-xl text-white font-bold uppercase mb-3">DROP IT</h3>
+                <p class="text-gray-400">Drag that track straight in. No hassle, no wait. Support for WAV and MP3 up to 50MB.</p>
             </div>
             
-            <div class="flex flex-col items-center text-center slide-up" style="animation-delay: 0.2s;">
-                <div class="feature-icon text-3xl mb-6">
+            <div class="card p-8 slide-up" style="animation-delay: 0.2s;">
+                <div class="feature-icon text-3xl mb-6 mx-auto">
                     <i class="fas fa-magic"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3">Intelligent Processing</h3>
-                <p class="text-gray-600">Automatic analysis chooses the perfect preset for your track's style and genre.</p>
+                <h3 class="text-xl text-white font-bold uppercase mb-3">COOK IT</h3>
+                <p class="text-gray-400">Our algorithms analyze your track's vibe and apply the right preset to make it slap.</p>
             </div>
             
-            <div class="flex flex-col items-center text-center slide-up" style="animation-delay: 0.4s;">
-                <div class="feature-icon text-3xl mb-6">
+            <div class="card p-8 slide-up" style="animation-delay: 0.4s;">
+                <div class="feature-icon text-3xl mb-6 mx-auto">
                     <i class="fas fa-download"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3">Instant Results</h3>
-                <p class="text-gray-600">Download your mastered track immediately with enhanced clarity, loudness, and depth.</p>
+                <h3 class="text-xl text-white font-bold uppercase mb-3">FLEX IT</h3>
+                <p class="text-gray-400">Download your mastered track instantly and watch your plays go through the roof.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Waveform visual section -->
-<section class="py-16 bg-gray-50">
+<section class="py-20 bg-black border-t border-gray-800">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl font-bold mb-6">Professional Quality Audio</h2>
-                <p class="text-lg text-gray-600 mb-6">Experience studio-quality mastering with our custom-designed presets:</p>
-                <ul class="space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+            <div class="lg:col-span-2">
+                <div class="slogan">PRESET HEAT</div>
+                <h2 class="rap-title mb-6">THE SECRET<br>SAUCE</h2>
+                <p class="rap-subtitle mb-8">Custom presets designed to match your style and make your track stand out:</p>
+                <ul class="space-y-6">
                     <li class="flex items-start">
-                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <span class="text-white mr-3 mt-1"><i class="fas fa-fire"></i></span>
                         <div>
-                            <span class="font-semibold">Clean Preset</span> - Balanced mastering for acoustic and vocal-focused tracks
+                            <span class="font-bold text-white uppercase">TRAP PRESET</span>
+                            <p class="text-gray-400">Heavy bass that hits, punchy drums, crisp hi-hats - ready for the streets</p>
                         </div>
                     </li>
                     <li class="flex items-start">
-                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <span class="text-white mr-3 mt-1"><i class="fas fa-fire"></i></span>
                         <div>
-                            <span class="font-semibold">Warm Preset</span> - Rich low-end with smooth highs for organic sound
+                            <span class="font-bold text-white uppercase">LO-FI PRESET</span>
+                            <p class="text-gray-400">Vintage vibes with just the right amount of warmth and character</p>
                         </div>
                     </li>
                     <li class="flex items-start">
-                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <span class="text-white mr-3 mt-1"><i class="fas fa-fire"></i></span>
                         <div>
-                            <span class="font-semibold">Lo-Fi Preset</span> - Vintage character with subtle imperfections
+                            <span class="font-bold text-white uppercase">CLEAN PRESET</span>
+                            <p class="text-gray-400">Crystal clear vocals that cut through the mix perfectly</p>
                         </div>
                     </li>
                     <li class="flex items-start">
-                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <span class="text-white mr-3 mt-1"><i class="fas fa-fire"></i></span>
                         <div>
-                            <span class="font-semibold">Trap Preset</span> - Heavy bass, punchy drums, and crisp highs
-                        </div>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
-                        <div>
-                            <span class="font-semibold">Bright Preset</span> - Clear and detailed with emphasized highs
+                            <span class="font-bold text-white uppercase">WARM PRESET</span>
+                            <p class="text-gray-400">Rich full sound with deep lows and smooth highs</p>
                         </div>
                     </li>
                 </ul>
-                <div class="mt-8">
-                    <a href="/upload" class="btn-primary inline-block px-6 py-3 rounded-md">Try it Now</a>
+                <div class="mt-10">
+                    <a href="/upload" class="btn-primary inline-block px-8 py-4">START MASTERING</a>
                 </div>
             </div>
-            <div>
-                <img src="https://pixabay.com/get/ga4931e798cb0e4a8e0bcd6a886778c0c7670c01242fcd5e752b75d770c0a97611063cb6380a01b6de0bd8b0cf4d163eaecef1fe458eb1220791b3e827ff5e62d_1280.jpg" alt="Audio waveform" class="rounded-lg shadow-xl">
+            <div class="lg:col-span-3">
+                <div class="waveform-container h-96 relative overflow-hidden">
+                    <img src="https://pixabay.com/get/ga4931e798cb0e4a8e0bcd6a886778c0c7670c01242fcd5e752b75d770c0a97611063cb6380a01b6de0bd8b0cf4d163eaecef1fe458eb1220791b3e827ff5e62d_1280.jpg" 
+                         alt="Audio waveform" 
+                         class="absolute inset-0 w-full h-full object-cover opacity-50">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"></div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- How it works -->
-<section class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">How It Works</h2>
+<section class="py-20 bg-black border-t border-gray-800 vinyl-pattern">
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="slogan mb-4 mx-auto text-center">THE PROCESS</div>
+        <h2 class="rap-title text-center mb-16">HOW WE<br>COOK IT UP</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="flex flex-col items-center text-center">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="card p-8 flex flex-col items-center text-center">
                 <div class="step-number">1</div>
-                <h3 class="text-xl font-bold mb-4">Upload Your Track</h3>
-                <p class="text-gray-600">Drag and drop your WAV or MP3 file. We support files up to 50MB.</p>
-                <div class="mt-4 text-5xl text-indigo-600">
+                <h3 class="text-xl text-white font-bold uppercase mb-4">DROP YOUR TRACK</h3>
+                <p class="text-gray-400">Upload your raw audio. WAV or MP3, we take it all up to 50MB.</p>
+                <div class="mt-6 text-5xl text-white">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
             </div>
             
-            <div class="flex flex-col items-center text-center">
+            <div class="card p-8 flex flex-col items-center text-center">
                 <div class="step-number">2</div>
-                <h3 class="text-xl font-bold mb-4">Select a Preset</h3>
-                <p class="text-gray-600">Our system analyzes your track and suggests the best preset, or choose your own.</p>
-                <div class="mt-4 text-5xl text-indigo-600">
+                <h3 class="text-xl text-white font-bold uppercase mb-4">SELECT YOUR VIBE</h3>
+                <p class="text-gray-400">We analyze your track's energy and suggest the right preset, or pick your own style.</p>
+                <div class="mt-6 text-5xl text-white">
                     <i class="fas fa-sliders-h"></i>
                 </div>
             </div>
             
-            <div class="flex flex-col items-center text-center">
+            <div class="card p-8 flex flex-col items-center text-center">
                 <div class="step-number">3</div>
-                <h3 class="text-xl font-bold mb-4">Download Mastered Track</h3>
-                <p class="text-gray-600">Receive your professionally mastered track ready for streaming or distribution.</p>
-                <div class="mt-4 text-5xl text-indigo-600">
+                <h3 class="text-xl text-white font-bold uppercase mb-4">GET THE HEAT</h3>
+                <p class="text-gray-400">Download your track with professional sound quality that hits different.</p>
+                <div class="mt-6 text-5xl text-white">
                     <i class="fas fa-download"></i>
                 </div>
             </div>
@@ -209,14 +305,15 @@
 </section>
 
 <!-- Testimonials -->
-<section class="py-16 bg-gray-50">
+<section class="py-20 bg-black border-t border-gray-800">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">What Our Users Say</h2>
+        <div class="slogan mb-4 mx-auto text-center">REAL TALK</div>
+        <h2 class="rap-title text-center mb-16">WHAT ARTISTS<br>ARE SAYING</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="testimonial-card bg-white p-8 rounded-lg shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="testimonial-card p-8">
                 <div class="mb-4">
-                    <div class="flex text-yellow-400">
+                    <div class="flex text-white">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -224,19 +321,19 @@
                         <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-6">"Masterify transformed my home recording into a professional-sounding track. The difference is night and day!"</p>
+                <p class="text-gray-400 mb-6">"No cap, this made my track sound like it came straight out of a high-end studio. The trap preset is crazy good."</p>
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">JD</div>
+                    <div class="w-12 h-12 bg-gray-900 border border-gray-700 flex items-center justify-center text-white font-bold">TS</div>
                     <div class="ml-4">
-                        <h4 class="font-semibold">John Doe</h4>
-                        <p class="text-sm text-gray-500">Indie Musician</p>
+                        <h4 class="font-semibold text-white">Trap Sensei</h4>
+                        <p class="text-sm text-gray-500">Producer</p>
                     </div>
                 </div>
             </div>
             
-            <div class="testimonial-card bg-white p-8 rounded-lg shadow-lg">
+            <div class="testimonial-card p-8">
                 <div class="mb-4">
-                    <div class="flex text-yellow-400">
+                    <div class="flex text-white">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -244,19 +341,19 @@
                         <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-6">"I was skeptical at first, but the trap preset gave my beats the punch and clarity they needed. Definitely worth it!"</p>
+                <p class="text-gray-400 mb-6">"Dropped my vocal track in and got back something that sounds like it's ready for the radio. This is a game changer for real."</p>
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">AS</div>
+                    <div class="w-12 h-12 bg-gray-900 border border-gray-700 flex items-center justify-center text-white font-bold">VP</div>
                     <div class="ml-4">
-                        <h4 class="font-semibold">Alex Smith</h4>
-                        <p class="text-sm text-gray-500">Beatmaker</p>
+                        <h4 class="font-semibold text-white">Verse Prophet</h4>
+                        <p class="text-sm text-gray-500">Rapper</p>
                     </div>
                 </div>
             </div>
             
-            <div class="testimonial-card bg-white p-8 rounded-lg shadow-lg">
+            <div class="testimonial-card p-8">
                 <div class="mb-4">
-                    <div class="flex text-yellow-400">
+                    <div class="flex text-white">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -264,12 +361,12 @@
                         <i class="fas fa-star-half-alt"></i>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-6">"The lo-fi preset gave my tracks the vintage warmth I was looking for. Quick, easy, and sounds professional!"</p>
+                <p class="text-gray-400 mb-6">"The lo-fi preset added just the right amount of vintage vibe to my beats. Now they sound like they came straight off vinyl. Fire."</p>
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">SJ</div>
+                    <div class="w-12 h-12 bg-gray-900 border border-gray-700 flex items-center justify-center text-white font-bold">BM</div>
                     <div class="ml-4">
-                        <h4 class="font-semibold">Sarah Johnson</h4>
-                        <p class="text-sm text-gray-500">Lo-Fi Producer</p>
+                        <h4 class="font-semibold text-white">Beat Maker</h4>
+                        <p class="text-sm text-gray-500">Lo-Fi Artist</p>
                     </div>
                 </div>
             </div>
@@ -278,13 +375,15 @@
 </section>
 
 <!-- CTA section -->
-<section class="py-16 bg-indigo-600 text-white">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to transform your sound?</h2>
-        <p class="text-xl mb-8 max-w-2xl mx-auto">Sign up today and receive one free mastering credit to experience the difference.</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="/upload" class="bg-white text-indigo-600 px-8 py-3 rounded-md text-lg font-semibold hover:bg-gray-100 transition">Try for Free</a>
-            <a href="/pricing" class="bg-indigo-800 px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-900 transition">View Pricing</a>
+<section class="py-20 bg-black border-t border-gray-800 relative vhs-effect">
+    <div class="noise-overlay"></div>
+    <div class="container mx-auto px-4 text-center z-10 relative">
+        <div class="slogan mb-4 mx-auto">ONE CLICK AWAY</div>
+        <h2 class="rap-title mb-10">READY TO<br>LEVEL UP?</h2>
+        <p class="rap-subtitle mb-10 max-w-2xl mx-auto">Sign up now and get your first track mastered for FREE. No strings attached.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-6">
+            <a href="/upload" class="btn-accent px-10 py-4 text-lg font-bold">START MASTERING</a>
+            <a href="/pricing" class="btn-secondary px-10 py-4 text-lg font-bold">SEE PRICING</a>
         </div>
     </div>
 </section>
@@ -292,15 +391,39 @@
 
 {% block scripts %}
 <script>
-    // Parallax effect
+    // Parallax effect with enhanced depth
     window.addEventListener('scroll', function() {
         const parallax = document.querySelector('.parallax');
         let scrollPosition = window.pageYOffset;
-        parallax.style.backgroundPositionY = scrollPosition * 0.5 + 'px';
+        parallax.style.backgroundPositionY = scrollPosition * 0.3 + 'px';
     });
     
-    // Animation on scroll
+    // Animation on scroll with added effects
     document.addEventListener('DOMContentLoaded', function() {
+        // Glitch text effect randomizer
+        const glitchElements = document.querySelectorAll('.glitch-effect');
+        
+        function triggerRandomGlitch() {
+            glitchElements.forEach(element => {
+                // Random chance to trigger glitch effect
+                if (Math.random() > 0.7) {
+                    element.style.transform = `skew(${(Math.random() * 4) - 2}deg)`;
+                    
+                    // Reset after short delay
+                    setTimeout(() => {
+                        element.style.transform = 'skew(0)';
+                    }, 100);
+                }
+            });
+            
+            // Schedule next glitch
+            setTimeout(triggerRandomGlitch, Math.random() * 3000 + 1000);
+        }
+        
+        // Start glitch effect
+        triggerRandomGlitch();
+        
+        // Animate elements on scroll
         const animateOnScroll = function() {
             const elements = document.querySelectorAll('.slide-up');
             
@@ -320,6 +443,16 @@
         
         // Check on scroll
         window.addEventListener('scroll', animateOnScroll);
+        
+        // Add noise overlay animation
+        const noiseOverlays = document.querySelectorAll('.noise-overlay');
+        noiseOverlays.forEach(overlay => {
+            overlay.style.opacity = 0.03;
+            
+            setInterval(() => {
+                overlay.style.opacity = Math.random() * 0.03 + 0.01;
+            }, 200);
+        });
     });
 </script>
 {% endblock %}

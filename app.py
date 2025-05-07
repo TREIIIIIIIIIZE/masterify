@@ -16,6 +16,7 @@ from models import User, MasteredFile
 from routes.auth import auth_bp
 from routes.views import views_bp
 from routes.stripe_routes import stripe_bp
+from routes.api import api_bp
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -174,6 +175,7 @@ with app.app_context():
     app.register_blueprint(views_bp)
     app.register_blueprint(stripe_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

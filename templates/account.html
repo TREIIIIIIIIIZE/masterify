@@ -13,16 +13,39 @@
         font-family: 'Inter', 'Montserrat', sans-serif !important;
     }
     .account-container {
-        max-width: 480px;
-        margin: 0 auto;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto 4rem auto;
         background: rgba(20,20,30,0.92);
         border-radius: 2rem;
         box-shadow: 0 8px 32px 0 #a855f755;
-        padding: 2.5rem 2rem 2rem 2rem;
+        padding: 2.5rem 3rem 2rem 3rem;
         margin-top: 3rem;
         display: flex;
-        flex-direction: column;
-        gap: 2.2rem;
+        flex-direction: row;
+        gap: 3rem;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    @media (max-width: 900px) {
+        .account-container {
+            flex-direction: column;
+            padding: 2rem 1rem;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+    }
+    .account-settings-panel {
+        flex: 1 1 0;
+        min-width: 320px;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+    .subscription-section {
+        flex: 2 1 0;
+        min-width: 320px;
+        width: 100%;
+        margin: 0 auto;
     }
     .account-title {
         font-size: 2rem;
@@ -179,23 +202,25 @@
 
 {% block content %}
 <div class="account-container">
-    <h1 class="account-title">Account Settings</h1>
-    <div class="account-desc">Manage your profile, update your email or password, and see your available credits.</div>
-    <div class="credits-badge">
-        <i class="fas fa-coins mr-2"></i>
-        {{ user.credits }} credit{% if user.credits != 1 %}s{% endif %} remaining
+    <div class="account-settings-panel">
+        <h1 class="account-title">Account Settings</h1>
+        <div class="account-desc">Manage your profile, update your email or password, and see your available credits.</div>
+        <div class="credits-badge">
+            <i class="fas fa-coins mr-2"></i>
+            {{ user.credits }} credit{% if user.credits != 1 %}s{% endif %} remaining
+        </div>
+        <form id="account-form">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-input" type="text" id="username" name="username" value="{{ user.username }}" required>
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" name="email" value="{{ user.email }}" required>
+            <label class="form-label" for="password">New Password</label>
+            <input class="form-input" type="password" id="password" name="password" placeholder="Leave blank to keep your current password">
+            <button type="submit" class="save-btn"><i class="fas fa-save mr-2"></i>Save Changes</button>
+            <div id="account-message" class="mt-4 text-center text-green-400 font-bold hidden"></div>
+        </form>
+        <hr class="divider">
     </div>
-    <form id="account-form">
-        <label class="form-label" for="username">Username</label>
-        <input class="form-input" type="text" id="username" name="username" value="{{ user.username }}" required>
-        <label class="form-label" for="email">Email</label>
-        <input class="form-input" type="email" id="email" name="email" value="{{ user.email }}" required>
-        <label class="form-label" for="password">New Password</label>
-        <input class="form-input" type="password" id="password" name="password" placeholder="Leave blank to keep your current password">
-        <button type="submit" class="save-btn"><i class="fas fa-save mr-2"></i>Save Changes</button>
-        <div id="account-message" class="mt-4 text-center text-green-400 font-bold hidden"></div>
-    </form>
-    <hr class="divider">
     <div class="subscription-section">
         <div class="plan-badge">Current Plan: <span id="plan-name">{{ user.plan or 'Starter' }}</span></div>
         <div class="text-gray-300 mb-2">Renewal date: <span id="renewal-date">{{ user.plan_renewal or 'N/A' }}</span></div>
@@ -217,7 +242,7 @@
             <div class="plan-card {% if user.plan == 'studio' %}current-plan{% endif %}">
                 <div class="plan-info">
                     <span class="plan-title">Studio</span>
-                    <span class="plan-desc">Unlimited mastering. For professionals & studios.</span>
+                    <span class="plan-desc">Unlimited credits. For professionals & studios.</span>
                 </div>
                 <button class="plan-btn studio" onclick="window.location.href='/stripe/checkout?plan=studio'">Choose</button>
             </div>

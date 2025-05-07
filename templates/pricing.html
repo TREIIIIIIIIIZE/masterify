@@ -122,56 +122,82 @@
         background: linear-gradient(90deg, #a855f7, #e329ff);
         transform: translateY(-3px) scale(1.04);
     }
-    /* FAQ */
+    /* FAQ améliorée */
     .faq-section {
-        max-width: 800px;
+        max-width: 900px;
         margin: 0 auto 3rem auto;
+        padding: 0 1rem;
     }
     .faq-title {
-        font-size: 2rem;
-        font-weight: 800;
+        font-size: 2.3rem;
+        font-weight: 900;
         color: #fff;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+        letter-spacing: -1px;
+        background: linear-gradient(90deg, #fff, #a855f7 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .faq-list {
-        background: rgba(20,20,30,0.85);
-        border-radius: 1.5rem;
-        box-shadow: 0 4px 24px 0 #a855f733;
-        padding: 2rem;
+        background: rgba(20,20,30,0.95);
+        border-radius: 2rem;
+        box-shadow: 0 8px 32px 0 #a855f755;
+        padding: 2.5rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
     }
     .faq-item {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0;
+        border-bottom: 1px solid #2d2d3a;
+        padding-bottom: 1.5rem;
+        transition: background 0.2s;
+    }
+    .faq-item:last-child {
+        border-bottom: none;
     }
     .faq-q {
         color: #e329ff;
         font-weight: 700;
-        font-size: 1.1rem;
+        font-size: 1.18rem;
         cursor: pointer;
         margin-bottom: 0.3rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
         transition: color 0.2s;
+        gap: 1rem;
+    }
+    .faq-q i {
+        transition: transform 0.3s;
+    }
+    .faq-item.open .faq-q i {
+        transform: rotate(180deg);
     }
     .faq-q:hover {
         color: #a855f7;
     }
     .faq-a {
         color: #bdb4e6;
-        font-size: 1rem;
-        margin-left: 1.2rem;
+        font-size: 1.08rem;
+        margin-left: 2.2rem;
         margin-top: 0.2rem;
         display: none;
+        line-height: 1.7;
         transition: all 0.3s;
     }
     .faq-item.open .faq-a {
         display: block;
+        animation: fadeInFaq 0.4s;
+    }
+    @keyframes fadeInFaq {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     @media (max-width: 600px) {
-        .pricing-title { font-size: 2rem; }
-        .plan-card { padding: 1.5rem 1rem; }
         .faq-list { padding: 1rem; }
+        .faq-title { font-size: 1.3rem; }
     }
 </style>
 {% endblock %}
@@ -219,9 +245,10 @@
             <div class="plan-card">
                 <div class="plan-title">Studio</div>
                 <div class="plan-price">30€</div>
-                <div class="plan-desc">For professionals and studios who need more power.</div>
+                <div class="plan-desc">For professionals and studios who need unlimited power.</div>
                 <ul class="plan-features">
-                    <li><i class="fas fa-check"></i>50 mastering credits</li>
+                    <li><i class="fas fa-check"></i>Unlimited mastering credits</li>
+                    <li><i class="fas fa-check"></i>Unlimited mastering</li>
                     <li><i class="fas fa-check"></i>All AI presets</li>
                     <li><i class="fas fa-check"></i>MP3 & WAV downloads</li>
                     <li><i class="fas fa-check"></i>Priority processing</li>

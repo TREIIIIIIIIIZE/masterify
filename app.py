@@ -40,7 +40,7 @@ db.init_app(app)
 # Enable CORS
 CORS(app)
 
-# Configuration spéciale pour assurer que les visiteurs peuvent naviguer sans authentification
+# Désactivation complète de l'authentification pour se concentrer sur l'interface
 app.config['LOGIN_DISABLED'] = True
 
 # Import routes after app initialization to avoid circular imports
@@ -49,11 +49,7 @@ with app.app_context():
     import models  # noqa: F401
     db.create_all()
     
-    # Import and register routes
+    # Import et enregistrement uniquement des routes de vue (pas d'authentification ni d'API pour l'instant)
     from routes.views import views_bp
-    from routes.api import api_bp
-    from routes.auth import auth_bp
     
     app.register_blueprint(views_bp)
-    app.register_blueprint(api_bp, url_prefix='/api')
-    app.register_blueprint(auth_bp, url_prefix='/auth')

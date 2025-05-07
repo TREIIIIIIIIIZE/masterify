@@ -44,19 +44,14 @@
                 <a href="/contact" class="text-white text-sm font-medium uppercase tracking-wide hover:text-purple-400 transition">Contact</a>
             </div>
             <div class="flex items-center space-x-4">
-                <div id="user-menu" class="hidden items-center space-x-4">
-                    <span id="credits-display" class="text-sm text-white font-medium">1 credit</span>
-                    <button id="logout-button" class="text-sm px-4 py-2 rounded-full bg-transparent border border-gray-700 text-white hover:border-purple-500 transition">
-                        Log out
-                    </button>
-                </div>
-                <div id="auth-buttons" class="flex items-center space-x-3">
-                    <button id="login-button" class="text-sm px-4 py-2 rounded-full bg-transparent border border-gray-700 text-white hover:border-purple-500 transition">
-                        Log in
-                    </button>
-                    <button id="signup-button" class="text-sm px-5 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition">
-                        Sign up
-                    </button>
+                <!-- Interface sans authentification pour le moment -->
+                <div id="demo-buttons" class="flex items-center space-x-3">
+                    <a href="/dashboard" class="text-sm px-4 py-2 rounded-full bg-transparent border border-gray-700 text-white hover:border-purple-500 transition">
+                        Demo Dashboard
+                    </a>
+                    <a href="/upload" class="text-sm px-5 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition">
+                        Upload Track
+                    </a>
                 </div>
                 <button class="md:hidden focus:outline-none" id="mobile-menu-button">
                     <i class="fas fa-bars text-xl text-white"></i>
@@ -73,53 +68,7 @@
         </div>
     </nav>
     
-    <!-- Auth modals -->
-    <div id="login-modal" class="modal-overlay hidden">
-        <div class="modal-content p-8 max-w-md w-full">
-            <h2 class="rap-title text-2xl mb-6 text-white">LOG IN</h2>
-            <form id="login-form" class="space-y-4 contact-form">
-                <div>
-                    <label class="block text-sm font-bold text-white">EMAIL</label>
-                    <input type="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-500 bg-gray-900 text-white">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-white">PASSWORD</label>
-                    <input type="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-500 bg-gray-900 text-white">
-                </div>
-                <div id="login-error" class="text-red-500 text-sm hidden"></div>
-                <div class="flex justify-between mt-6">
-                    <button type="button" class="cancel-btn btn-secondary">CANCEL</button>
-                    <button type="submit" class="btn-accent">LOG IN</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div id="signup-modal" class="modal-overlay hidden">
-        <div class="modal-content p-8 max-w-md w-full">
-            <h2 class="rap-title text-2xl mb-6 text-white">SIGN UP</h2>
-            <form id="signup-form" class="space-y-4 contact-form">
-                <div>
-                    <label class="block text-sm font-bold text-white">USERNAME</label>
-                    <input type="text" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-500 bg-gray-900 text-white">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-white">EMAIL</label>
-                    <input type="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-500 bg-gray-900 text-white">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-white">PASSWORD</label>
-                    <input type="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-500 bg-gray-900 text-white">
-                </div>
-                <div id="signup-error" class="text-red-500 text-sm hidden"></div>
-                <div class="flex justify-between mt-6">
-                    <button type="button" class="cancel-btn btn-secondary">CANCEL</button>
-                    <button type="submit" class="btn-accent">SIGN UP</button>
-                </div>
-                <p class="text-sm text-gray-400 text-center mt-4">Get 1 free credit instantly</p>
-            </form>
-        </div>
-    </div>
+    <!-- Version de démonstration - Pas de modals d'authentification -->
     
     <!-- Main content -->
     <main>
@@ -188,133 +137,6 @@
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenu.classList.toggle('hidden');
         });
-        
-        // Auth modal functionality
-        const loginButton = document.getElementById('login-button');
-        const signupButton = document.getElementById('signup-button');
-        const loginModal = document.getElementById('login-modal');
-        const signupModal = document.getElementById('signup-modal');
-        const cancelButtons = document.querySelectorAll('.cancel-btn');
-        
-        loginButton.addEventListener('click', () => {
-            window.location.href = '/auth/login_page';
-        });
-        
-        signupButton.addEventListener('click', () => {
-            window.location.href = '/auth/login_page?tab=signup';
-        });
-        
-        cancelButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                loginModal.classList.add('hidden');
-                signupModal.classList.add('hidden');
-            });
-        });
-        
-        // Close modals when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                loginModal.classList.add('hidden');
-            }
-            if (e.target === signupModal) {
-                signupModal.classList.add('hidden');
-            }
-        });
-        
-        // Form submission
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const loginError = document.getElementById('login-error');
-        const signupError = document.getElementById('signup-error');
-        
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(loginForm);
-            const data = {
-                email: formData.get('email'),
-                password: formData.get('password')
-            };
-            
-            try {
-                const response = await axios.post('/auth/login', data);
-                if (response.data.success) {
-                    loginModal.classList.add('hidden');
-                    updateAuthUI(response.data.user);
-                    window.location.reload();
-                }
-            } catch (error) {
-                loginError.textContent = error.response?.data?.message || 'Login failed';
-                loginError.classList.remove('hidden');
-            }
-        });
-        
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(signupForm);
-            const data = {
-                username: formData.get('username'),
-                email: formData.get('email'),
-                password: formData.get('password')
-            };
-            
-            try {
-                const response = await axios.post('/auth/register', data);
-                if (response.data.success) {
-                    signupModal.classList.add('hidden');
-                    updateAuthUI(response.data.user);
-                    window.location.reload();
-                }
-            } catch (error) {
-                signupError.textContent = error.response?.data?.message || 'Signup failed';
-                signupError.classList.remove('hidden');
-            }
-        });
-        
-        // Update UI based on auth state
-        function updateAuthUI(user) {
-            const authButtons = document.getElementById('auth-buttons');
-            const userMenu = document.getElementById('user-menu');
-            const creditsDisplay = document.getElementById('credits-display');
-            
-            if (user) {
-                authButtons.classList.add('hidden');
-                userMenu.classList.remove('hidden');
-                userMenu.classList.add('flex');
-                creditsDisplay.textContent = `${user.credits} credit${user.credits !== 1 ? 's' : ''}`;
-            } else {
-                authButtons.classList.remove('hidden');
-                userMenu.classList.add('hidden');
-                userMenu.classList.remove('flex');
-            }
-        }
-        
-        // Check auth state on page load
-        async function checkAuth() {
-            try {
-                const response = await axios.get('/auth/user');
-                if (response.data.success) {
-                    updateAuthUI(response.data.user);
-                }
-            } catch (error) {
-                console.log('Not logged in');
-            }
-        }
-        
-        // Logout functionality
-        document.getElementById('logout-button').addEventListener('click', async () => {
-            try {
-                const response = await axios.get('/auth/logout');
-                if (response.data.success) {
-                    updateAuthUI(null);
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.error('Logout failed', error);
-            }
-        });
-        
-        // Initialize auth check
-        checkAuth();
     </script>
     
     {% block scripts %}{% endblock %}

@@ -24,7 +24,15 @@ def contact():
     return render_template('contact.html')
 
 @views_bp.route('/dashboard')
-@login_required
 def dashboard():
     """User dashboard with mastered files and credits"""
-    return render_template('dashboard.html', user=current_user)
+    # Version de démonstration sans authentification
+    # Créer un utilisateur de démonstration pour l'affichage
+    class DemoUser:
+        def __init__(self):
+            self.username = "DemoUser"
+            self.credits = 5
+            self.email = "demo@example.com"
+    
+    demo_user = DemoUser()
+    return render_template('dashboard.html', user=demo_user)

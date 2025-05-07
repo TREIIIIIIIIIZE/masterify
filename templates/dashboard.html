@@ -87,7 +87,7 @@
                     <div class="flex items-center space-x-4">
                         <div class="credits-badge bg-indigo-100 text-indigo-800">
                             <i class="fas fa-coins mr-2"></i>
-                            <span class="user-credits">{{ user.credits }}</span> credit{{ user.credits != 1 ? 's' : '' }}
+                            <span class="user-credits">{{ user.credits }}</span> credit{% if user.credits != 1 %}s{% endif %}
                         </div>
                         <a href="/pricing" class="btn-outline-primary px-4 py-2 rounded-md">
                             Buy More Credits
@@ -240,7 +240,7 @@
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                             <div class="text-4xl font-bold mb-4 md:mb-0">
                                 <span class="user-credits">{{ user.credits }}</span>
-                                <span class="text-gray-500 text-xl">credit{{ user.credits != 1 ? 's' : '' }} remaining</span>
+                                <span class="text-gray-500 text-xl">credit{% if user.credits != 1 %}s{% endif %} remaining</span>
                             </div>
                             
                             <a href="/pricing" class="btn-primary px-6 py-3 rounded-md">

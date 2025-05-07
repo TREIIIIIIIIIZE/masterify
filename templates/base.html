@@ -31,33 +31,31 @@
 </head>
 <body class="bg-black text-white">
     <!-- Navigation -->
-    <nav class="nav-rap px-4 py-4">
+    <nav class="py-5 px-6 relative z-30">
         <div class="container mx-auto flex justify-between items-center">
             <a href="/" class="flex items-center">
-                <span class="logo text-white">
-                    <i class="fas fa-volume-up mr-2"></i>
-                    MASTERIFY
+                <span class="logo text-white font-heading text-2xl font-bold tracking-tight">
+                    <span class="text-white">MASTER</span><span class="text-purple-500">IFY</span>
                 </span>
             </a>
             <div class="hidden md:flex space-x-8">
-                <a href="/" class="nav-link-rap text-white hover:text-white transition">HOME</a>
-                <a href="/upload" class="nav-link-rap text-white hover:text-white transition">DROP TRACK</a>
-                <a href="/pricing" class="nav-link-rap text-white hover:text-white transition">CREDITS</a>
-                <a href="/contact" class="nav-link-rap text-white hover:text-white transition">CONNECT</a>
+                <a href="/upload" class="text-white text-sm font-medium uppercase tracking-wide hover:text-purple-400 transition">Mastering</a>
+                <a href="/pricing" class="text-white text-sm font-medium uppercase tracking-wide hover:text-purple-400 transition">Pricing</a>
+                <a href="/contact" class="text-white text-sm font-medium uppercase tracking-wide hover:text-purple-400 transition">Contact</a>
             </div>
             <div class="flex items-center space-x-4">
-                <div id="user-menu" class="hidden items-center space-x-2">
-                    <span id="credits-display" class="text-sm text-white font-semibold">1 credit</span>
-                    <button id="logout-button" class="text-sm px-3 py-1 border border-white text-white hover:bg-white hover:text-black transition">
-                        LOGOUT
+                <div id="user-menu" class="hidden items-center space-x-4">
+                    <span id="credits-display" class="text-sm text-white font-medium">1 credit</span>
+                    <button id="logout-button" class="text-sm px-4 py-2 rounded-full bg-transparent border border-gray-700 text-white hover:border-purple-500 transition">
+                        Log out
                     </button>
                 </div>
-                <div id="auth-buttons" class="flex items-center space-x-2">
-                    <button id="login-button" class="text-sm px-4 py-2 border border-white text-white hover:bg-white hover:text-black transition">
-                        LOG IN
+                <div id="auth-buttons" class="flex items-center space-x-3">
+                    <button id="login-button" class="text-sm px-4 py-2 rounded-full bg-transparent border border-gray-700 text-white hover:border-purple-500 transition">
+                        Log in
                     </button>
-                    <button id="signup-button" class="text-sm px-4 py-2 bg-white text-black hover:bg-gray-200 transition">
-                        SIGN UP
+                    <button id="signup-button" class="text-sm px-5 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-500 transition">
+                        Sign up
                     </button>
                 </div>
                 <button class="md:hidden focus:outline-none" id="mobile-menu-button">
@@ -66,12 +64,11 @@
             </div>
         </div>
         <!-- Mobile menu -->
-        <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="/" class="block px-3 py-2 text-white hover:bg-white hover:text-black transition">HOME</a>
-                <a href="/upload" class="block px-3 py-2 text-white hover:bg-white hover:text-black transition">DROP TRACK</a>
-                <a href="/pricing" class="block px-3 py-2 text-white hover:bg-white hover:text-black transition">CREDITS</a>
-                <a href="/contact" class="block px-3 py-2 text-white hover:bg-white hover:text-black transition">CONNECT</a>
+        <div class="md:hidden hidden absolute w-full left-0 z-10 bg-black bg-opacity-90 backdrop-blur-sm border-t border-gray-800" id="mobile-menu">
+            <div class="container mx-auto py-5 px-6 space-y-3">
+                <a href="/upload" class="block py-2 text-white hover:text-purple-400 transition text-sm font-medium uppercase">Mastering</a>
+                <a href="/pricing" class="block py-2 text-white hover:text-purple-400 transition text-sm font-medium uppercase">Pricing</a>
+                <a href="/contact" class="block py-2 text-white hover:text-purple-400 transition text-sm font-medium uppercase">Contact</a>
             </div>
         </div>
     </nav>

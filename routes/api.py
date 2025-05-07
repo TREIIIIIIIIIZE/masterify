@@ -22,11 +22,10 @@ if not os.path.exists(UPLOAD_FOLDER):
 ALLOWED_EXTENSIONS = {'mp3', 'wav'}
 
 @api_bp.route('/upload', methods=['POST'])
-@login_required
 def upload_file():
     """Upload an audio file for mastering"""
-    # Check if the user has enough credits
-    if current_user.credits <= 0:
+    # Only check credits if user is logged in
+    if current_user.is_authenticated and current_user.credits <= 0:
         return jsonify({
             'success': False,
             'message': 'Not enough credits. Please purchase more credits to continue.'

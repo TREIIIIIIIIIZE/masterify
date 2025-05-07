@@ -1,554 +1,770 @@
 {% extends 'base.html' %}
 
-{% block title %}Upload Audio - Masterify{% endblock %}
+{% block title %}MASTERIFY - Upload Your Track{% endblock %}
 
 {% block head %}
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-    /* Waveform container */
-    .waveform-container {
-        width: 100%;
-        height: 150px;
-        background-color: #f3f4f6;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        position: relative;
+    body {
+        background-color: #000000;
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
     }
     
-    /* Waveform canvas */
-    .waveform {
+    .dot-pattern {
+        background-image: radial-gradient(#333333 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0;
         width: 100%;
         height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.3;
+        z-index: 0;
     }
     
-    /* Preset selection */
-    .preset-option {
-        border: 2px solid transparent;
-        transition: all 0.2s ease;
+    .purple-glow {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(227, 41, 255, 0.3) 0%, rgba(138, 43, 226, 0.1) 30%, transparent 70%);
+        filter: blur(100px);
+        z-index: 0;
     }
     
-    .preset-option:hover {
-        border-color: #a5b4fc;
+    .upload-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .preset-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    @media (min-width: 768px) {
+        .preset-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    
+    .preset-card {
+        background-color: rgba(20, 20, 20, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+    }
+    
+    .preset-card:hover {
+        border-color: #e329ff;
         transform: translateY(-2px);
     }
     
-    .preset-option.selected {
-        border-color: #6366F1;
-        background-color: rgba(99, 102, 241, 0.1);
+    .preset-card.active {
+        border-color: #e329ff;
+        background-color: rgba(138, 43, 226, 0.1);
     }
     
-    /* Processing animation */
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    .preset-icon {
+        font-size: 2rem;
+        color: #e329ff;
+        margin-bottom: 0.5rem;
     }
     
-    .spinner {
-        animation: spin 1s linear infinite;
+    .login-prompt {
+        text-align: center;
+        max-width: 500px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: rgba(20, 20, 20, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+    }
+    
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e329ff;
+        color: #000;
+        font-weight: 700;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-size: 1.125rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 0 20px rgba(227, 41, 255, 0.3);
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: translateX(-100%);
+    }
+    
+    .cta-button:hover::before {
+        transform: translateX(100%);
+        transition: all 0.8s ease;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(227, 41, 255, 0.5);
+    }
+    
+    .cta-button:disabled {
+        background-color: #666;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        color: white;
+        font-weight: 600;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(227, 41, 255, 0.3);
+        text-transform: uppercase;
+    }
+    
+    .secondary-button:hover {
+        border-color: #e329ff;
+        transform: translateY(-2px);
     }
     
     /* FilePond customization */
     .filepond--panel-root {
-        background-color: #f3f4f6;
-        border: 2px dashed #d1d5db;
+        background-color: rgba(30, 30, 30, 0.8);
+        border: 2px dashed #444;
     }
     
     .filepond--drop-label {
-        color: #6366F1;
+        color: #fff;
         font-family: 'Inter', sans-serif;
     }
     
     .filepond--label-action {
-        text-decoration-color: #6366F1;
+        text-decoration-color: #e329ff;
+        color: #e329ff;
     }
     
-    /* Progress bar */
-    .progress-bar {
+    /* Waveform */
+    .waveform-container {
         width: 100%;
-        height: 8px;
-        background-color: #e5e7eb;
-        border-radius: 9999px;
+        height: 160px;
+        background-color: rgba(20, 20, 20, 0.5);
+        border-radius: 12px;
         overflow: hidden;
-    }
-    
-    .progress-bar-inner {
-        height: 100%;
-        background-color: #6366F1;
-        transition: width 0.3s ease;
+        position: relative;
+        border: 1px solid #333;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="py-12 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Upload Your Audio</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Drop your audio file below and let our AI analyze and master it to perfection.
-                <span id="credits-info" class="font-medium text-indigo-600"></span>
+<div class="py-20 relative">
+    <div class="dot-pattern opacity-20"></div>
+    <div class="purple-glow absolute top-1/4 right-1/4 opacity-20"></div>
+    <div class="purple-glow absolute bottom-1/4 left-1/4 opacity-20"></div>
+    
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center mb-12">
+            <div class="badge mx-auto mb-4">AUDIO MASTERING</div>
+            <h1 class="text-4xl font-bold mb-4">DROP YOUR TRACK</h1>
+            <p class="text-gray-400 text-lg">
+                Upload your audio file and let us transform it into a professional-sounding masterpiece
             </p>
         </div>
         
-        <div class="max-w-4xl mx-auto">
-            <!-- File upload area -->
-            <div class="bg-white p-8 rounded-lg shadow-md mb-8">
-                <h2 class="text-xl font-semibold mb-4">Step 1: Upload your track</h2>
-                
-                <div id="upload-container" class="mb-4">
-                    <input type="file" class="filepond" name="audio" id="audio-upload" />
-                </div>
-                
-                <div class="text-sm text-gray-500">
-                    <p>Supported formats: MP3, WAV • Maximum file size: 50MB</p>
-                </div>
+        <!-- Upload area -->
+        <div id="upload-area" class="upload-container">
+            <div class="mb-6">
+                <input type="file" class="filepond" name="filepond" accept="audio/mp3,audio/wav" />
+                <p class="text-sm text-gray-500 text-center mt-2">Supports MP3 and WAV files up to 50MB</p>
             </div>
             
-            <!-- Audio waveform and preset selection (hidden until file is uploaded) -->
-            <div id="waveform-section" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
-                <h2 class="text-xl font-semibold mb-4">Step 2: Review and select preset</h2>
+            <div id="preset-selection" class="hidden mt-12">
+                <h2 class="text-2xl font-bold mb-2 text-center">SELECT YOUR PRESET</h2>
+                <p class="text-gray-400 text-center mb-6">Our AI has analyzed your track and suggested the best preset</p>
                 
-                <div class="waveform-container mb-6">
-                    <canvas id="waveform" class="waveform"></canvas>
+                <div class="preset-grid">
+                    <div class="preset-card" data-preset="trap">
+                        <div class="preset-icon"><i class="fas fa-drum"></i></div>
+                        <h3 class="font-bold text-lg mb-1">TRAP</h3>
+                        <p class="text-gray-400 text-sm">Heavy low end with punchy drums and crisp highs</p>
+                    </div>
+                    
+                    <div class="preset-card" data-preset="lofi">
+                        <div class="preset-icon"><i class="fas fa-tape"></i></div>
+                        <h3 class="font-bold text-lg mb-1">LO-FI</h3>
+                        <p class="text-gray-400 text-sm">Vintage feel with warm characteristics</p>
+                    </div>
+                    
+                    <div class="preset-card" data-preset="clean">
+                        <div class="preset-icon"><i class="fas fa-wave-square"></i></div>
+                        <h3 class="font-bold text-lg mb-1">CLEAN</h3>
+                        <p class="text-gray-400 text-sm">Balanced mastering for vocals and acoustic tracks</p>
+                    </div>
+                    
+                    <div class="preset-card" data-preset="warm">
+                        <div class="preset-icon"><i class="fas fa-fire"></i></div>
+                        <h3 class="font-bold text-lg mb-1">WARM</h3>
+                        <p class="text-gray-400 text-sm">Rich lows and smooth highs for an organic sound</p>
+                    </div>
                 </div>
                 
-                <div class="mb-6">
-                    <h3 class="font-medium mb-2">Detected audio profile:</h3>
-                    <p id="audio-analysis" class="text-gray-700">
-                        <span id="suggested-preset-text" class="font-medium text-indigo-600"></span>
-                        is recommended for your track based on its characteristics.
+                <div class="mt-12 text-center" id="processing-button-container">
+                    <button id="process-button" class="cta-button" disabled>
+                        MASTER YOUR TRACK
+                    </button>
+                    <p class="text-gray-500 text-sm mt-4">
+                        Processing will use 1 credit from your account
                     </p>
                 </div>
-                
-                <h3 class="font-medium mb-4">Select a mastering preset:</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="clean">
-                        <h4 class="font-semibold mb-1">Clean</h4>
-                        <p class="text-sm text-gray-600">Balanced mastering for acoustic and vocal-focused tracks</p>
-                    </div>
-                    
-                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="warm">
-                        <h4 class="font-semibold mb-1">Warm</h4>
-                        <p class="text-sm text-gray-600">Rich low-end with smooth highs for organic sound</p>
-                    </div>
-                    
-                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="lofi">
-                        <h4 class="font-semibold mb-1">Lo-Fi</h4>
-                        <p class="text-sm text-gray-600">Vintage character with subtle imperfections</p>
-                    </div>
-                    
-                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="trap">
-                        <h4 class="font-semibold mb-1">Trap</h4>
-                        <p class="text-sm text-gray-600">Heavy bass, punchy drums, and crisp highs</p>
-                    </div>
-                    
-                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="bright">
-                        <h4 class="font-semibold mb-1">Bright</h4>
-                        <p class="text-sm text-gray-600">Clear and detailed with emphasized highs</p>
-                    </div>
-                </div>
-                
-                <button id="process-button" class="btn-primary px-6 py-3 rounded-md w-full">
-                    Process Audio with <span id="selected-preset-text">Clean</span> Preset
-                </button>
             </div>
             
-            <!-- Processing section (hidden until processing starts) -->
-            <div id="processing-section" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
-                <h2 class="text-xl font-semibold mb-4">Step 3: Processing your audio</h2>
+            <!-- Processing area -->
+            <div id="processing-area" class="hidden mt-8 text-center">
+                <div class="inline-block">
+                    <svg class="animate-spin h-12 w-12 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mt-4 mb-2">Processing Your Track</h3>
+                <p class="text-gray-400">This may take a few moments depending on the file size</p>
+            </div>
+            
+            <!-- Result area -->
+            <div id="result-area" class="hidden mt-12">
+                <h2 class="text-2xl font-bold mb-6 text-center">YOUR MASTERED TRACK</h2>
                 
-                <div class="flex flex-col items-center justify-center py-8">
-                    <div class="spinner text-4xl text-indigo-600 mb-4">
-                        <i class="fas fa-circle-notch"></i>
+                <div class="p-8 bg-opacity-10 bg-white rounded-xl border border-gray-800 flex flex-col items-center">
+                    <div class="waveform-container w-full mb-6">
+                        <canvas id="waveform" class="w-full h-full"></canvas>
                     </div>
                     
-                    <h3 class="text-lg font-medium mb-2">Mastering in progress...</h3>
-                    <p class="text-gray-600 mb-4">This may take a few moments depending on the length of your track.</p>
-                    
-                    <div class="w-full max-w-md">
-                        <div class="progress-bar">
-                            <div id="progress-bar-inner" class="progress-bar-inner" style="width: 0%"></div>
+                    <div class="flex items-center justify-center mb-6">
+                        <button id="play-button" class="mr-4 w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white hover:bg-purple-700 transition">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div>
+                            <h3 id="track-name" class="font-bold text-lg"></h3>
+                            <p id="track-details" class="text-gray-400 text-sm"></p>
                         </div>
-                        <p id="progress-text" class="text-sm text-gray-500 mt-2 text-center">Initializing...</p>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Results section (hidden until processing is complete) -->
-            <div id="results-section" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
-                <h2 class="text-xl font-semibold mb-4">Your mastered track is ready!</h2>
-                
-                <div class="waveform-container mb-6">
-                    <canvas id="processed-waveform" class="waveform"></canvas>
-                </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                    <h3 class="font-medium mb-2">Processing details:</h3>
-                    <ul class="text-sm text-gray-700">
-                        <li class="flex items-center mb-1">
-                            <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
-                            Preset: <span id="results-preset" class="font-medium ml-1">Clean</span>
-                        </li>
-                        <li class="flex items-center mb-1">
-                            <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
-                            File format: <span id="results-format" class="font-medium ml-1">MP3, 320 kbps</span>
-                        </li>
-                        <li class="flex items-center">
-                            <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
-                            Credits used: <span class="font-medium ml-1">1</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a id="download-button" href="#" class="btn-primary text-center px-6 py-3 rounded-md flex-1">
-                        <i class="fas fa-download mr-2"></i> Download Mastered Track
+                    
+                    <a id="download-button" href="#" class="cta-button">
+                        <i class="fas fa-download mr-2"></i> DOWNLOAD MASTERED TRACK
                     </a>
-                    <button id="new-upload-button" class="btn-secondary text-center px-6 py-3 rounded-md flex-1">
-                        <i class="fas fa-plus mr-2"></i> Master Another Track
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <button id="reset-button" class="secondary-button">
+                        PROCESS ANOTHER TRACK
                     </button>
                 </div>
             </div>
             
-            <!-- Not logged in message (shown when user is not logged in) -->
-            <div id="login-required" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
-                <div class="text-center py-8">
-                    <div class="text-5xl text-indigo-600 mb-4">
-                        <i class="fas fa-user-lock"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">Login Required</h2>
-                    <p class="text-gray-600 mb-6">You need to log in to use Masterify's audio mastering features.</p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <button id="login-prompt-button" class="btn-primary px-6 py-3 rounded-md">
-                            Log In
-                        </button>
-                        <button id="signup-prompt-button" class="btn-secondary px-6 py-3 rounded-md">
-                            Sign Up
-                        </button>
-                    </div>
+            <!-- Login prompt (shown when user tries to process without being logged in) -->
+            <div id="login-prompt" class="hidden login-prompt">
+                <h3 class="text-xl font-bold mb-4">Create an account to master your track</h3>
+                <p class="text-gray-400 mb-6">Sign up now to receive one free mastering credit</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="prompt-signup-button" class="cta-button text-sm">
+                        SIGN UP
+                    </button>
+                    <button id="prompt-login-button" class="secondary-button text-sm">
+                        LOG IN
+                    </button>
                 </div>
             </div>
             
-            <!-- No credits message (shown when user has no credits) -->
-            <div id="no-credits" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
-                <div class="text-center py-8">
-                    <div class="text-5xl text-indigo-600 mb-4">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold mb-2">No Credits Remaining</h2>
-                    <p class="text-gray-600 mb-6">You have used all your mastering credits. Purchase more to continue.</p>
-                    <a href="/pricing" class="btn-primary inline-block px-6 py-3 rounded-md">
-                        View Pricing Plans
-                    </a>
-                </div>
+            <!-- Error message -->
+            <div id="error-message" class="hidden mt-8 bg-red-900/30 border border-red-500 text-red-200 p-4 rounded-lg text-center">
+                An error occurred. Please try again.
             </div>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+
 <script>
+    // Check if user is logged in
+    let isLoggedIn = false;
+    let userCredits = 0;
+    let uploadedFileName = null;
+    let originalFileName = null;
+    let suggestedPreset = null;
+    let selectedPreset = null;
+    let processedFileId = null;
+
+    // Initialize on document load
     document.addEventListener('DOMContentLoaded', function() {
-        // Globals
-        let uploadedFileName = null;
-        let originalFileName = null;
-        let selectedPreset = 'clean';
-        let processedFileId = null;
-        let isLoggedIn = false;
-        let userCredits = 0;
-        
-        // DOM elements
-        const uploadContainer = document.getElementById('upload-container');
-        const waveformSection = document.getElementById('waveform-section');
-        const processingSection = document.getElementById('processing-section');
-        const resultsSection = document.getElementById('results-section');
-        const loginRequired = document.getElementById('login-required');
-        const noCredits = document.getElementById('no-credits');
-        const creditsInfo = document.getElementById('credits-info');
-        const presetOptions = document.querySelectorAll('.preset-option');
-        const processButton = document.getElementById('process-button');
-        const downloadButton = document.getElementById('download-button');
-        const newUploadButton = document.getElementById('new-upload-button');
-        const loginPromptButton = document.getElementById('login-prompt-button');
-        const signupPromptButton = document.getElementById('signup-prompt-button');
-        const selectedPresetText = document.getElementById('selected-preset-text');
-        const suggestedPresetText = document.getElementById('suggested-preset-text');
-        const resultsPreset = document.getElementById('results-preset');
-        const resultsFormat = document.getElementById('results-format');
-        const progressBarInner = document.getElementById('progress-bar-inner');
-        const progressText = document.getElementById('progress-text');
-        const waveformCanvas = document.getElementById('waveform');
-        const processedWaveformCanvas = document.getElementById('processed-waveform');
-        
-        // Check auth status
-        async function checkAuthStatus() {
-            try {
-                const response = await axios.get('/auth/user');
-                if (response.data.success) {
-                    isLoggedIn = true;
-                    userCredits = response.data.user.credits;
-                    creditsInfo.textContent = `You have ${userCredits} mastering credit${userCredits !== 1 ? 's' : ''} remaining.`;
-                    
-                    // Show appropriate section based on credits
-                    if (userCredits <= 0) {
-                        uploadContainer.classList.add('hidden');
-                        noCredits.classList.remove('hidden');
-                    }
-                } else {
-                    isLoggedIn = false;
-                    uploadContainer.classList.add('hidden');
-                    loginRequired.classList.remove('hidden');
-                }
-            } catch (error) {
-                isLoggedIn = false;
-                uploadContainer.classList.add('hidden');
-                loginRequired.classList.remove('hidden');
-            }
-        }
+        // Check authentication status
+        checkAuth();
         
         // Initialize FilePond
         FilePond.registerPlugin(FilePondPluginFileValidateType);
         
-        const pond = FilePond.create(document.querySelector('input[type="file"]'), {
-            allowFileTypeValidation: true,
-            acceptedFileTypes: ['audio/mp3', 'audio/wav', 'audio/mpeg'],
-            labelFileTypeNotAllowed: 'Only MP3 and WAV files are supported',
-            fileValidateTypeLabelExpectedTypes: 'Accepts MP3 and WAV',
-            labelIdle: 'Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>',
+        const pond = FilePond.create(document.querySelector('.filepond'), {
+            labelIdle: `Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>`,
+            acceptedFileTypes: ['audio/mp3', 'audio/wav'],
+            allowMultiple: false,
+            maxFiles: 1,
             server: {
                 process: {
                     url: '/api/upload',
                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': 'your-csrf-token',
-                    },
                     withCredentials: true,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                     onload: (response) => {
-                        const data = JSON.parse(response);
-                        if (data.success) {
-                            uploadedFileName = data.filename;
-                            originalFileName = data.original_filename;
+                        const result = JSON.parse(response);
+                        
+                        if (result.success) {
+                            uploadedFileName = result.filename;
+                            originalFileName = result.original_filename;
+                            suggestedPreset = result.suggested_preset;
                             
-                            // Show waveform section and load waveform data
-                            waveformSection.classList.remove('hidden');
-                            loadWaveform(uploadedFileName);
-                            
-                            // Set suggested preset
-                            const suggestedPreset = data.suggested_preset;
-                            suggestedPresetText.textContent = capitalizeFirstLetter(suggestedPreset);
-                            
-                            // Select the suggested preset
-                            selectPreset(suggestedPreset);
+                            // Show preset selection
+                            showPresetSelection(suggestedPreset);
+                        } else {
+                            showError(result.message);
                         }
                         return response;
                     },
                     onerror: (response) => {
-                        console.error('Upload error:', response);
-                        alert('Error uploading file. Please try again.');
-                        return response;
+                        try {
+                            const result = JSON.parse(response);
+                            
+                            if (result.message === 'Not enough credits. Please purchase more credits to continue.') {
+                                showError('You do not have enough credits to process this track. Please purchase more credits.');
+                            } else if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred: ' + result.message);
+                            }
+                        } catch (e) {
+                            if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred. Please try again.');
+                            }
+                        }
                     }
                 }
             }
         });
         
-        // Load waveform data
-        async function loadWaveform(filename) {
-            try {
-                const response = await axios.get(`/api/waveform/${filename}`);
-                if (response.data.success) {
-                    drawWaveform(waveformCanvas, response.data.waveform);
-                }
-            } catch (error) {
-                console.error('Error loading waveform:', error);
-            }
-        }
-        
-        // Draw waveform on canvas
-        function drawWaveform(canvas, data) {
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = canvas.parentNode.offsetWidth;
-            const height = canvas.height = canvas.parentNode.offsetHeight;
-            
-            // Clear canvas
-            ctx.clearRect(0, 0, width, height);
-            
-            // Set styling
-            ctx.fillStyle = '#6366F1';
-            
-            // Calculate bar width based on data points
-            const barWidth = width / data.length;
-            const barSpacing = barWidth * 0.2;
-            const barWidthWithSpacing = barWidth - barSpacing;
-            
-            // Draw each bar
-            for (let i = 0; i < data.length; i++) {
-                const x = i * barWidth;
-                const barHeight = data[i] * height * 0.8;
-                const y = (height - barHeight) / 2;
+        // Set up event listeners for preset selection
+        document.querySelectorAll('.preset-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active class from all cards
+                document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
                 
-                ctx.fillRect(x, y, barWidthWithSpacing, barHeight);
-            }
-        }
-        
-        // Select preset
-        function selectPreset(preset) {
-            // Remove selected class from all presets
-            presetOptions.forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // Add selected class to chosen preset
-            const chosenPreset = document.querySelector(`.preset-option[data-preset="${preset}"]`);
-            if (chosenPreset) {
-                chosenPreset.classList.add('selected');
-                selectedPreset = preset;
-                selectedPresetText.textContent = capitalizeFirstLetter(preset);
-            }
-        }
-        
-        // Preset selection event listeners
-        presetOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const preset = this.dataset.preset;
-                selectPreset(preset);
+                // Add active class to selected card
+                this.classList.add('active');
+                
+                // Store selected preset
+                selectedPreset = this.dataset.preset;
+                
+                // Enable process button
+                document.getElementById('process-button').disabled = false;
             });
         });
         
         // Process button click handler
-        processButton.addEventListener('click', async function() {
-            if (!uploadedFileName) {
-                alert('Please upload a file first.');
-                return;
-            }
-            
-            // Check if user is logged in and has credits
+        document.getElementById('process-button').addEventListener('click', function() {
             if (!isLoggedIn) {
-                waveformSection.classList.add('hidden');
-                loginRequired.classList.remove('hidden');
+                showLoginPrompt();
                 return;
             }
             
             if (userCredits <= 0) {
-                waveformSection.classList.add('hidden');
-                noCredits.classList.remove('hidden');
+                showError('You do not have enough credits to process this track. Please purchase more credits.');
                 return;
             }
             
-            // Hide waveform section and show processing section
-            waveformSection.classList.add('hidden');
-            processingSection.classList.remove('hidden');
+            processTrack();
+        });
+        
+        // Login/Signup buttons in prompt
+        document.getElementById('prompt-login-button').addEventListener('click', function() {
+            window.location.href = '/login';
+        });
+        
+        document.getElementById('prompt-signup-button').addEventListener('click', function() {
+            window.location.href = '/register';
+        });
+        
+        // Reset button handler
+        document.getElementById('reset-button').addEventListener('click', function() {
+            resetUploadArea();
+        });
+        
+        // Play button handler
+        document.getElementById('play-button').addEventListener('click', function() {
+            const button = this;
+            const icon = button.querySelector('i');
             
-            // Simulate progress (in production, this would be real-time progress from the server)
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                updateProgress(progress);
-                
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
+            if (button.dataset.playing === 'true') {
+                // Stop playing
+                if (window.audioPlayer) {
+                    window.audioPlayer.pause();
+                    window.audioPlayer.currentTime = 0;
                 }
-            }, 500);
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+                button.dataset.playing = 'false';
+            } else {
+                // Start playing
+                if (!window.audioPlayer) {
+                    window.audioPlayer = new Audio(`/api/download/${processedFileId}`);
+                    
+                    window.audioPlayer.addEventListener('ended', function() {
+                        icon.classList.remove('fa-pause');
+                        icon.classList.add('fa-play');
+                        button.dataset.playing = 'false';
+                    });
+                }
+                
+                window.audioPlayer.play();
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                button.dataset.playing = 'true';
+            }
+        });
+    });
+    
+    // Check authentication status
+    async function checkAuth() {
+        try {
+            const response = await fetch('/auth/user');
             
-            try {
-                // Process the audio file
-                const response = await axios.post('/api/process', {
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    isLoggedIn = true;
+                    userCredits = data.user.credits;
+                }
+            }
+        } catch (error) {
+            console.error('Error checking authentication:', error);
+        }
+    }
+    
+    // Show preset selection
+    function showPresetSelection(suggested) {
+        document.getElementById('preset-selection').classList.remove('hidden');
+        
+        // Select the suggested preset
+        if (suggested) {
+            const suggestedCard = document.querySelector(`.preset-card[data-preset="${suggested}"]`);
+            if (suggestedCard) {
+                suggestedCard.classList.add('active');
+                selectedPreset = suggested;
+                document.getElementById('process-button').disabled = false;
+            }
+        }
+        
+        // Scroll to preset selection
+        document.getElementById('preset-selection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    // Process the track
+    async function processTrack() {
+        // Show processing UI
+        document.getElementById('preset-selection').classList.add('hidden');
+        document.getElementById('processing-area').classList.remove('hidden');
+        
+        try {
+            const response = await fetch('/api/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
                     filename: uploadedFileName,
                     original_filename: originalFileName,
                     preset: selectedPreset
-                });
-                
-                if (response.data.success) {
-                    // Clear the interval if it's still running
-                    clearInterval(progressInterval);
-                    updateProgress(100);
-                    
-                    // Update user credits
-                    userCredits = response.data.credits_remaining;
-                    creditsInfo.textContent = `You have ${userCredits} mastering credit${userCredits !== 1 ? 's' : ''} remaining.`;
-                    
-                    // Set download link and processed file info
-                    processedFileId = response.data.file_id;
-                    downloadButton.href = `/api/download/${processedFileId}`;
-                    
-                    // Update results info
-                    resultsPreset.textContent = capitalizeFirstLetter(selectedPreset);
-                    resultsFormat.textContent = 'MP3, 320 kbps';
-                    
-                    // Hide processing section and show results
-                    setTimeout(() => {
-                        processingSection.classList.add('hidden');
-                        resultsSection.classList.remove('hidden');
-                        
-                        // Draw placeholder processed waveform (would be replaced with actual processed waveform data)
-                        // This is just a simple visualization enhancement for now
-                        const placeholderData = Array(50).fill().map(() => Math.random() * 0.8 + 0.2);
-                        drawWaveform(processedWaveformCanvas, placeholderData);
-                    }, 1000);
-                } else {
-                    throw new Error(response.data.message || 'Processing failed');
-                }
-            } catch (error) {
-                clearInterval(progressInterval);
-                console.error('Processing error:', error);
-                alert('Error processing audio: ' + (error.response?.data?.message || error.message || 'Unknown error'));
-                
-                // Reset UI
-                processingSection.classList.add('hidden');
-                waveformSection.classList.remove('hidden');
-            }
-        });
-        
-        // Update progress bar
-        function updateProgress(percent) {
-            progressBarInner.style.width = `${percent}%`;
+                })
+            });
             
-            if (percent < 30) {
-                progressText.textContent = 'Analyzing audio...';
-            } else if (percent < 60) {
-                progressText.textContent = 'Applying mastering preset...';
-            } else if (percent < 90) {
-                progressText.textContent = 'Finalizing your track...';
+            const data = await response.json();
+            
+            if (data.success) {
+                processedFileId = data.file_id;
+                userCredits = data.credits_remaining;
+                
+                // Update UI to show success
+                showResultArea(data);
             } else {
-                progressText.textContent = 'Mastering complete!';
+                showError(data.message);
+                // Hide processing UI
+                document.getElementById('processing-area').classList.add('hidden');
+                document.getElementById('preset-selection').classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Processing error:', error);
+            showError('An error occurred while processing your track. Please try again.');
+            // Hide processing UI
+            document.getElementById('processing-area').classList.add('hidden');
+            document.getElementById('preset-selection').classList.remove('hidden');
+        }
+    }
+    
+    // Show result area
+    function showResultArea(data) {
+        document.getElementById('processing-area').classList.add('hidden');
+        document.getElementById('result-area').classList.remove('hidden');
+        
+        // Set track details
+        document.getElementById('track-name').textContent = originalFileName;
+        document.getElementById('track-details').textContent = `Processed with ${selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)} preset`;
+        
+        // Set download link
+        document.getElementById('download-button').href = `/api/download/${data.file_id}`;
+        
+        // Fetch waveform data and render it
+        fetch(`/api/waveform/${data.processed_filename}`)
+            .then(response => response.json())
+            .then(waveformData => {
+                if (waveformData.success) {
+                    renderWaveform(waveformData.waveform);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching waveform:', error);
+            });
+            
+        // Scroll to result area
+        document.getElementById('result-area').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    // Render waveform
+    function renderWaveform(waveformData) {
+        const canvas = document.getElementById('waveform');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw background
+        ctx.fillStyle = '#111111';
+        ctx.fillRect(0, 0, width, height);
+        
+        // Draw waveform
+        const barWidth = width / waveformData.length;
+        const centerY = height / 2;
+        
+        ctx.beginPath();
+        ctx.moveTo(0, centerY);
+        
+        for (let i = 0; i < waveformData.length; i++) {
+            const x = i * barWidth;
+            const y = centerY - (waveformData[i] * centerY);
+            
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
             }
         }
         
-        // New upload button click handler
-        newUploadButton.addEventListener('click', function() {
-            // Reset all sections
-            resultsSection.classList.add('hidden');
-            waveformSection.classList.add('hidden');
-            processingSection.classList.add('hidden');
-            
-            // Show upload container and reset FilePond
-            uploadContainer.classList.remove('hidden');
-            pond.removeFiles();
-            
-            // Reset variables
-            uploadedFileName = null;
-            originalFileName = null;
-            processedFileId = null;
-        });
-        
-        // Login prompt button click handler
-        loginPromptButton.addEventListener('click', function() {
-            document.getElementById('login-button').click();
-        });
-        
-        // Signup prompt button click handler
-        signupPromptButton.addEventListener('click', function() {
-            document.getElementById('signup-button').click();
-        });
-        
-        // Helper function to capitalize first letter
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        for (let i = waveformData.length - 1; i >= 0; i--) {
+            const x = i * barWidth;
+            const y = centerY + (waveformData[i] * centerY);
+            ctx.lineTo(x, y);
         }
         
-        // Initialize auth check
-        checkAuthStatus();
-    });
+        ctx.closePath();
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, 'rgba(147, 51, 234, 0.7)');
+        gradient.addColorStop(0.5, 'rgba(227, 41, 255, 0.5)');
+        gradient.addColorStop(1, 'rgba(147, 51, 234, 0.7)');
+        
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Draw center line
+        ctx.beginPath();
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(width, centerY);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.stroke();
+    }
+    
+    // Show login prompt
+    function showLoginPrompt() {
+        document.getElementById('login-prompt').classList.remove('hidden');
+        document.getElementById('preset-selection').classList.add('hidden');
+        
+        // Scroll to login prompt
+        document.getElementById('login-prompt').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    // Show error message
+    function showError(message) {
+        const errorElement = document.getElementById('error-message');
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+        
+        // Hide error after 5 seconds
+        setTimeout(() => {
+            errorElement.classList.add('hidden');
+        }, 5000);
+    }
+    
+    // Reset upload area
+    function resetUploadArea() {
+        document.getElementById('result-area').classList.add('hidden');
+        document.getElementById('preset-selection').classList.add('hidden');
+        document.getElementById('login-prompt').classList.add('hidden');
+        document.getElementById('error-message').classList.add('hidden');
+        
+        // Reset FilePond
+        FilePond.destroy(document.querySelector('.filepond'));
+        document.querySelector('.filepond').value = '';
+        
+        // Reinitialize FilePond
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.create(document.querySelector('.filepond'), {
+            labelIdle: `Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>`,
+            acceptedFileTypes: ['audio/mp3', 'audio/wav'],
+            allowMultiple: false,
+            maxFiles: 1,
+            server: {
+                process: {
+                    url: '/api/upload',
+                    method: 'POST',
+                    withCredentials: true,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    onload: (response) => {
+                        const result = JSON.parse(response);
+                        
+                        if (result.success) {
+                            uploadedFileName = result.filename;
+                            originalFileName = result.original_filename;
+                            suggestedPreset = result.suggested_preset;
+                            
+                            // Show preset selection
+                            showPresetSelection(suggestedPreset);
+                        } else {
+                            showError(result.message);
+                        }
+                        return response;
+                    },
+                    onerror: (response) => {
+                        try {
+                            const result = JSON.parse(response);
+                            
+                            if (result.message === 'Not enough credits. Please purchase more credits to continue.') {
+                                showError('You do not have enough credits to process this track. Please purchase more credits.');
+                            } else if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred: ' + result.message);
+                            }
+                        } catch (e) {
+                            if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred. Please try again.');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Reset variables
+        uploadedFileName = null;
+        originalFileName = null;
+        suggestedPreset = null;
+        selectedPreset = null;
+        processedFileId = null;
+        
+        if (window.audioPlayer) {
+            window.audioPlayer.pause();
+            window.audioPlayer = null;
+        }
+        
+        // Scroll to top
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 </script>
+<style>
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(138, 43, 226, 0.1);
+        border: 1px solid rgba(227, 41, 255, 0.3);
+        color: #e329ff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        letter-spacing: 1px;
+    }
+</style>
 {% endblock %}

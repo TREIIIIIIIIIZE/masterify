@@ -1,15 +1,20 @@
 from datetime import datetime
-from app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from extensions import db
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True, nullable=False)
+    username = db.Column(db.String(64), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256))
+    provider = db.Column(db.String(20))  # 'email', 'google', 'discord'
+    provider_id = db.Column(db.String(100))
+    credits = db.Column(db.Integer, default=0)
+    plan = db.Column(db.String(50), nullable=True)
+    plan_renewal = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    credits = db.Column(db.Integer, default=1)  # New users get 1 free credit
+    last_login = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     mastered_files = db.relationship('MasteredFile', backref='user', lazy=True)
     
     def set_password(self, password):
@@ -25,7 +30,8 @@ class User(UserMixin, db.Model):
         return False
     
     def add_credits(self, amount):
-        self.credits += amount
+        if amount > 0:
+            self.credits += amount
 
 class MasteredFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)

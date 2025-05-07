@@ -4,12 +4,14 @@
  */
 
 :root {
-    --color-primary: #8a2be2; /* Violet */
+    --color-primary: #111111;
+    --color-background: #0a0a1a;
+    --color-text: #f8f8ff;
+    --color-accent: #7cf9f7;
+    --color-accent-2: #e329ff;
+    --color-glow: #7c5fff;
+    --color-gray: #333347;
     --color-secondary: #9370db; /* Medium purple */
-    --color-accent: #e329ff; /* Bright magenta */
-    --color-background: #0a0a0a; /* Near black */
-    --color-text: #ffffff; /* White */
-    --color-gray: #333333; /* Dark gray */
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     --spacing-base: 16px;
@@ -31,13 +33,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-    color: var(--color-primary);
+    color: var(--color-accent-2);
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 a:hover {
-    color: #5253cc;
+    color: var(--color-accent);
 }
 
 /* Button styling */
@@ -61,7 +63,7 @@ a:hover {
     background-color: var(--color-accent);
     color: var(--color-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px var(--color-glow);
 }
 
 .btn-secondary {
@@ -100,27 +102,27 @@ a:hover {
 }
 
 .btn-accent:hover {
-    background-color: transparent;
+    background-color: var(--color-primary);
     color: var(--color-accent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px var(--color-glow);
 }
 
 /* Card styling */
 .card {
-    background-color: #111111;
+    background-color: #18182a;
     border-radius: 0;
-    border: 1px solid #333333;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-gray);
+    box-shadow: 0 4px 16px 0 var(--color-glow);
     padding: 1.5rem;
     transition: all 0.3s ease;
     position: relative;
 }
 
 .card:hover {
-    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+    border-color: var(--color-accent);
+    box-shadow: 0 10px 30px var(--color-glow);
     transform: translateY(-5px);
-    border-color: #555555;
 }
 
 .card::after {
@@ -372,7 +374,7 @@ a:hover {
 }
 
 .madmonq-purple {
-    color: var(--color-accent);
+    color: var(--color-accent-2);
 }
 
 .madmonq-subtitle {
@@ -431,7 +433,7 @@ a:hover {
 }
 
 .dot-pattern {
-    background-image: radial-gradient(#333333 1px, transparent 1px);
+    background-image: radial-gradient(var(--color-gray) 1px, transparent 1px);
     background-size: 20px 20px;
     background-position: 0 0;
     width: 100%;
@@ -444,14 +446,14 @@ a:hover {
     pointer-events: none;
 }
 
-.purple-glow {
+.purple-glow, .home-glow {
     position: absolute;
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--color-glow) 0%, var(--color-accent-2) 60%, transparent 100%);
     filter: blur(80px);
-    opacity: 0.2;
+    opacity: 0.5;
     z-index: 0;
     pointer-events: none;
 }
@@ -459,8 +461,8 @@ a:hover {
 .badge {
     display: inline-flex;
     align-items: center;
-    background-color: rgba(138, 43, 226, 0.2);
-    border: 1px solid rgba(138, 43, 226, 0.3);
+    background-color: rgba(124, 249, 247, 0.08);
+    border: 1px solid var(--color-accent);
     color: var(--color-accent);
     font-size: 0.75rem;
     font-weight: 600;
@@ -561,4 +563,35 @@ a:hover {
     .slogan {
         font-size: 1rem;
     }
+}
+
+.hero-image-glow {
+    position: relative;
+    z-index: 1;
+}
+.hero-image-glow::before {
+    content: '';
+    position: absolute;
+    top: -8%;
+    left: -8%;
+    width: 116%;
+    height: 116%;
+    border-radius: 50%;
+    z-index: -1;
+    background: conic-gradient(
+        from 0deg,
+        #a855f7 0%,
+        #7cf9f7 30%,
+        #e329ff 60%,
+        #7c5fff 90%,
+        #a855f7 100%
+    );
+    filter: blur(48px) brightness(0.7);
+    opacity: 0.45;
+    animation: heroGlowAnim 8s linear infinite;
+    transition: opacity 0.3s;
+}
+@keyframes heroGlowAnim {
+    0% { filter: blur(48px) brightness(0.7); opacity: 0.45; transform: rotate(0deg); }
+    100% { filter: blur(48px) brightness(0.7); opacity: 0.45; transform: rotate(360deg); }
 }

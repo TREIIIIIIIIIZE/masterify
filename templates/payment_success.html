@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Paiement réussi - Masterify{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+    <div class="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-lg shadow-2xl p-8 animate__animated animate__fadeIn">
+        <div class="mx-auto w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-white mb-4">Paiement réussi!</h2>
+        
+        <p class="text-lg text-gray-300 mb-8">
+            Merci pour votre achat! Les crédits ont été ajoutés à votre compte.
+            Vous pouvez maintenant continuer à masteriser vos morceaux.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{{ url_for('views.dashboard') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Tableau de bord
+            </a>
+            
+            <a href="{{ url_for('views.upload') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-purple-600 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Masteriser un morceau
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

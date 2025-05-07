@@ -296,10 +296,10 @@
                 <h3 class="text-xl font-bold mb-4">Create an account to master your track</h3>
                 <p class="text-gray-400 mb-6">Sign up now to receive one free mastering credit</p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="prompt-signup-button" class="cta-button text-sm">
+                    <button id="prompt-signup-button" class="cta-button text-sm" onclick="window.location.href='/auth?tab=signup'">
                         SIGN UP
                     </button>
-                    <button id="prompt-login-button" class="secondary-button text-sm">
+                    <button id="prompt-login-button" class="secondary-button text-sm" onclick="window.location.href='/auth?tab=login'">
                         LOG IN
                     </button>
                 </div>
@@ -312,6 +312,40 @@
         </div>
     </div>
 </div>
+
+<!-- Section d'information/copywriting catchy -->
+<section class="relative py-20 overflow-hidden bg-black">
+    <div class="absolute inset-0 z-0">
+        <div class="dot-pattern w-full h-full"></div>
+        <div class="purple-glow absolute top-1/2 left-1/3 w-[600px] h-[600px] opacity-20" id="glow1"></div>
+        <div class="purple-glow absolute top-1/3 right-1/4 w-[600px] h-[600px] opacity-20" id="glow2"></div>
+    </div>
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="badge mx-auto mb-4">WHY MASTERIFY?</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-6 bg-gradient-to-tr from-purple-400 to-pink-500 bg-clip-text text-transparent">Paste your file. Get instant magic.</h2>
+            <p class="text-xl text-gray-300 mb-8">No more endless tweaking or expensive studios. With Masterify, you simply paste your audio file and let our AI-powered engine do the rest. In seconds, your track is transformed into a professional, release-ready masterpiece—ready to blow up on every platform.</p>
+            <ul class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left mb-10">
+                <li class="flex items-start">
+                    <span class="text-purple-400 text-2xl mr-3"><i class="fas fa-bolt"></i></span>
+                    <span><strong>Lightning Fast</strong><br>Get your master in less than a minute, 24/7.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-pink-400 text-2xl mr-3"><i class="fas fa-magic"></i></span>
+                    <span><strong>Studio Quality</strong><br>AI mastering trained on thousands of hit records.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-400 text-2xl mr-3"><i class="fas fa-headphones-alt"></i></span>
+                    <span><strong>100% Yours</strong><br>No hidden fees, no royalties. Your sound, your rules.</span>
+                </li>
+            </ul>
+            <div class="mt-8">
+                <a href="/pricing" class="cta-button text-lg px-8 py-4">See Pricing &amp; Get Started</a>
+            </div>
+            <p class="mt-8 text-gray-500 text-sm">Join thousands of artists who trust Masterify to make their music shine. Ready to stand out?</p>
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block scripts %}
@@ -338,9 +372,11 @@
         
         const pond = FilePond.create(document.querySelector('.filepond'), {
             labelIdle: `Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>`,
-            acceptedFileTypes: ['audio/mp3', 'audio/wav'],
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav'],
             allowMultiple: false,
             maxFiles: 1,
+            maxFileSize: '50MB',
+            name: 'audio',
             server: {
                 process: {
                     url: '/api/upload',
@@ -681,9 +717,11 @@
         FilePond.registerPlugin(FilePondPluginFileValidateType);
         FilePond.create(document.querySelector('.filepond'), {
             labelIdle: `Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>`,
-            acceptedFileTypes: ['audio/mp3', 'audio/wav'],
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav'],
             allowMultiple: false,
             maxFiles: 1,
+            maxFileSize: '50MB',
+            name: 'audio',
             server: {
                 process: {
                     url: '/api/upload',
@@ -768,3 +806,5 @@
     }
 </style>
 {% endblock %}
+
+{% block footer %}{% endblock %}

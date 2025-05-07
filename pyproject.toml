@@ -1,13 +1,14 @@
 [project]
-name = "repl-nix-workspace"
+name = "masterify"
 version = "0.1.0"
-description = "Add your description here"
+description = "A modern web application"
 requires-python = ">=3.11"
 dependencies = [
     "email-validator>=2.2.0",
     "flask-cors>=5.0.1",
     "flask>=3.1.0",
     "flask-sqlalchemy>=3.1.1",
+    "flask-migrate>=4.0.5",
     "gunicorn>=23.0.0",
     "psycopg2-binary>=2.9.10",
     "pydub>=0.25.1",
@@ -16,4 +17,11 @@ dependencies = [
     "flask-login>=0.6.3",
     "numpy>=2.2.5",
     "flask-wtf>=1.2.2",
+    "flask-dance",
+    "requests-oauthlib",
+    "python-dotenv",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

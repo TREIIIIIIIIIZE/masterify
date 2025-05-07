@@ -4,407 +4,269 @@
 
 {% block head %}
 <style>
-    /* Pricing card */
-    .pricing-card {
-        transition: all 0.3s ease;
+    .pricing-hero {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        position: relative;
+        z-index: 1;
     }
-    
-    .pricing-card:hover {
-        transform: translateY(-8px);
+    .pricing-title {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, #fff, #a855f7 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: -1px;
     }
-    
-    .pricing-card.popular {
-        transform: scale(1.05);
-        z-index: 10;
+    .pricing-subtitle {
+        color: #bdb4e6;
+        font-size: 1.25rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
     }
-    
-    .pricing-card.popular:hover {
-        transform: scale(1.05) translateY(-8px);
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto 3rem auto;
     }
-    
-    /* Popular badge */
-    .popular-badge {
+    .plan-card {
+        background: rgba(20,20,30,0.85);
+        border: 1px solid #333347;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 32px 0 #a855f733;
+        padding: 2.5rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: box-shadow 0.3s, border 0.3s, transform 0.3s;
+        position: relative;
+    }
+    .plan-card.popular {
+        border: 2px solid #e329ff;
+        box-shadow: 0 12px 40px 0 #e329ff33;
+        transform: scale(1.04);
+    }
+    .plan-badge {
         position: absolute;
-        top: -12px;
-        right: -12px;
-        background-color: #10B981;
-        color: white;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        top: -1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.3rem 1.2rem;
+        border-radius: 999px;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 8px #e329ff44;
     }
-    
-    /* Feature check */
-    .feature-check {
-        color: #6366F1;
+    .plan-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        text-align: center;
     }
-    
-    /* Feature cross */
-    .feature-cross {
-        color: #EF4444;
+    .plan-price {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #e329ff;
+        margin-bottom: 0.5rem;
+        text-align: center;
     }
-    
-    /* FAQ accordion */
-    .accordion-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
+    .plan-desc {
+        color: #bdb4e6;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
     }
-    
-    .accordion-item.active .accordion-content {
-        max-height: 200px;
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+        width: 100%;
     }
-    
-    .accordion-button {
-        transition: all 0.3s ease;
+    .plan-features li {
+        color: #fff;
+        font-size: 1rem;
+        margin-bottom: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
     }
-    
-    .accordion-item.active .accordion-button {
-        color: #6366F1;
+    .plan-features i {
+        color: #e329ff;
+        font-size: 1.1rem;
     }
-    
-    .accordion-item.active .accordion-icon {
-        transform: rotate(180deg);
+    .plan-btn {
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 999px;
+        padding: 0.9rem 2.5rem;
+        margin-top: auto;
+        box-shadow: 0 2px 12px #e329ff33;
+        transition: background 0.3s, transform 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+    .plan-btn:hover {
+        background: linear-gradient(90deg, #a855f7, #e329ff);
+        transform: translateY(-3px) scale(1.04);
+    }
+    /* FAQ */
+    .faq-section {
+        max-width: 800px;
+        margin: 0 auto 3rem auto;
+    }
+    .faq-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .faq-list {
+        background: rgba(20,20,30,0.85);
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 24px 0 #a855f733;
+        padding: 2rem;
+    }
+    .faq-item {
+        margin-bottom: 1.5rem;
+    }
+    .faq-q {
+        color: #e329ff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: color 0.2s;
+    }
+    .faq-q:hover {
+        color: #a855f7;
+    }
+    .faq-a {
+        color: #bdb4e6;
+        font-size: 1rem;
+        margin-left: 1.2rem;
+        margin-top: 0.2rem;
+        display: none;
+        transition: all 0.3s;
+    }
+    .faq-item.open .faq-a {
+        display: block;
+    }
+    @media (max-width: 600px) {
+        .pricing-title { font-size: 2rem; }
+        .plan-card { padding: 1.5rem 1rem; }
+        .faq-list { padding: 1rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Purchase mastering credits to transform your tracks. 
-                New users start with one free credit.
-            </p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <!-- Basic Plan -->
-            <div class="pricing-card bg-white rounded-lg shadow-lg p-8 relative">
-                <h2 class="text-2xl font-bold mb-2">Starter</h2>
-                <p class="text-gray-600 mb-6">Perfect for trying out our services</p>
-                
-                <div class="flex items-end mb-6">
-                    <span class="text-4xl font-bold">$9</span>
-                    <span class="text-gray-600 ml-1">/ 3 credits</span>
-                </div>
-                
-                <div class="text-sm text-gray-600 mb-6">
-                    <p>$3 per master</p>
-                </div>
-                
-                <ul class="space-y-3 mb-8">
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>3 mastering credits</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>All mastering presets</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>MP3 downloads (320kbps)</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-cross mr-2"><i class="fas fa-times"></i></span>
-                        <span class="text-gray-400">Priority processing</span>
-                    </li>
+<section class="relative py-20 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <div class="dot-pattern w-full h-full"></div>
+        <div class="home-glow" style="top: -100px; left: -100px;"></div>
+        <div class="home-glow" style="bottom: -120px; right: -120px;"></div>
+    </div>
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <h1 class="pricing-title">Choose Your Plan</h1>
+        <p class="pricing-subtitle">Simple, transparent pricing. No hidden fees. Start mastering your tracks today.</p>
+        <div class="plans-grid">
+            <div class="plan-card">
+                <div class="plan-title">Starter</div>
+                <div class="plan-price">5€</div>
+                <div class="plan-desc">Perfect to try Masterify and master your first tracks.</div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>5 mastering credits</li>
+                    <li><i class="fas fa-check"></i>All AI presets</li>
+                    <li><i class="fas fa-check"></i>MP3 downloads</li>
+                    <li><i class="fas fa-times" style="color:#555"></i><span style="color:#bdb4e6;">Priority processing</span></li>
                 </ul>
-                
-                <button class="w-full py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
-                    Get Started
-                </button>
+                <form action="/auth" method="GET">
+                    <button type="submit" class="plan-btn">Get Started</button>
+                </form>
             </div>
-            
-            <!-- Pro Plan -->
-            <div class="pricing-card popular bg-white rounded-lg shadow-xl p-8 relative">
-                <div class="popular-badge">Most Popular</div>
-                
-                <h2 class="text-2xl font-bold mb-2">Pro</h2>
-                <p class="text-gray-600 mb-6">Best value for regular mastering</p>
-                
-                <div class="flex items-end mb-6">
-                    <span class="text-4xl font-bold">$24</span>
-                    <span class="text-gray-600 ml-1">/ 10 credits</span>
-                </div>
-                
-                <div class="text-sm text-gray-600 mb-6">
-                    <p>$2.40 per master</p>
-                </div>
-                
-                <ul class="space-y-3 mb-8">
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>10 mastering credits</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>All mastering presets</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>MP3 downloads (320kbps)</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>Priority processing</span>
-                    </li>
+            <div class="plan-card popular">
+                <div class="plan-badge">Most Popular</div>
+                <div class="plan-title">Pro</div>
+                <div class="plan-price">15€</div>
+                <div class="plan-desc">Best value for regular mastering and more flexibility.</div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>20 mastering credits</li>
+                    <li><i class="fas fa-check"></i>All AI presets</li>
+                    <li><i class="fas fa-check"></i>MP3 & WAV downloads</li>
+                    <li><i class="fas fa-check"></i>Priority processing</li>
                 </ul>
-                
-                <button class="w-full py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
-                    Get Pro
-                </button>
+                <form action="/auth" method="GET">
+                    <button type="submit" class="plan-btn">Get Pro</button>
+                </form>
             </div>
-            
-            <!-- Premium Plan -->
-            <div class="pricing-card bg-white rounded-lg shadow-lg p-8 relative">
-                <h2 class="text-2xl font-bold mb-2">Studio</h2>
-                <p class="text-gray-600 mb-6">For professionals and studios</p>
-                
-                <div class="flex items-end mb-6">
-                    <span class="text-4xl font-bold">$49</span>
-                    <span class="text-gray-600 ml-1">/ 25 credits</span>
-                </div>
-                
-                <div class="text-sm text-gray-600 mb-6">
-                    <p>$1.96 per master</p>
-                </div>
-                
-                <ul class="space-y-3 mb-8">
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>25 mastering credits</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>All mastering presets</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>WAV downloads (lossless)</span>
-                    </li>
-                    <li class="flex items-start">
-                        <span class="feature-check mr-2"><i class="fas fa-check"></i></span>
-                        <span>Priority processing</span>
-                    </li>
+            <div class="plan-card">
+                <div class="plan-title">Studio</div>
+                <div class="plan-price">30€</div>
+                <div class="plan-desc">For professionals and studios who need more power.</div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>50 mastering credits</li>
+                    <li><i class="fas fa-check"></i>All AI presets</li>
+                    <li><i class="fas fa-check"></i>MP3 & WAV downloads</li>
+                    <li><i class="fas fa-check"></i>Priority processing</li>
                 </ul>
-                
-                <button class="w-full py-3 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
-                    Get Studio
-                </button>
+                <form action="/auth" method="GET">
+                    <button type="submit" class="plan-btn">Get Studio</button>
+                </form>
             </div>
         </div>
-        
-        <!-- Features comparison -->
-        <div class="max-w-5xl mx-auto mt-16">
-            <h2 class="text-2xl font-bold text-center mb-8">Compare Features</h2>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full bg-white rounded-lg shadow-md">
-                    <thead>
-                        <tr class="bg-gray-50">
-                            <th class="py-4 px-6 text-left font-semibold">Feature</th>
-                            <th class="py-4 px-6 text-center font-semibold">Starter</th>
-                            <th class="py-4 px-6 text-center font-semibold">Pro</th>
-                            <th class="py-4 px-6 text-center font-semibold">Studio</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">Credits</td>
-                            <td class="py-4 px-6 text-center">3</td>
-                            <td class="py-4 px-6 text-center">10</td>
-                            <td class="py-4 px-6 text-center">25</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">Price per master</td>
-                            <td class="py-4 px-6 text-center">$3.00</td>
-                            <td class="py-4 px-6 text-center">$2.40</td>
-                            <td class="py-4 px-6 text-center">$1.96</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">File upload limit</td>
-                            <td class="py-4 px-6 text-center">30MB</td>
-                            <td class="py-4 px-6 text-center">40MB</td>
-                            <td class="py-4 px-6 text-center">50MB</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">Download format</td>
-                            <td class="py-4 px-6 text-center">MP3 (320kbps)</td>
-                            <td class="py-4 px-6 text-center">MP3 (320kbps)</td>
-                            <td class="py-4 px-6 text-center">WAV (lossless)</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">Mastering presets</td>
-                            <td class="py-4 px-6 text-center">5</td>
-                            <td class="py-4 px-6 text-center">5</td>
-                            <td class="py-4 px-6 text-center">5</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">Priority processing</td>
-                            <td class="py-4 px-6 text-center"><i class="fas fa-times text-red-500"></i></td>
-                            <td class="py-4 px-6 text-center"><i class="fas fa-check text-indigo-600"></i></td>
-                            <td class="py-4 px-6 text-center"><i class="fas fa-check text-indigo-600"></i></td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-4 px-6">Result storage</td>
-                            <td class="py-4 px-6 text-center">7 days</td>
-                            <td class="py-4 px-6 text-center">30 days</td>
-                            <td class="py-4 px-6 text-center">90 days</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- FAQ Section -->
-        <div class="max-w-3xl mx-auto mt-16">
-            <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            
-            <div class="space-y-4">
-                <!-- FAQ Item 1 -->
-                <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
-                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
-                        <span>What is a mastering credit?</span>
-                        <span class="accordion-icon transition-transform duration-300">
-                            <i class="fas fa-chevron-down"></i>
-                        </span>
-                    </button>
-                    <div class="accordion-content px-6 pb-6">
-                        <p class="text-gray-700">
-                            A mastering credit allows you to process one audio file through our professional mastering system. You can choose from different presets to get the perfect sound for your track. Each credit is used for one processed file, regardless of length.
-                        </p>
-                    </div>
+        <div class="faq-section mt-16">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-q">What is a mastering credit? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">A mastering credit allows you to process one audio file through our AI mastering engine. Each credit = one mastered track.</div>
                 </div>
-                
-                <!-- FAQ Item 2 -->
-                <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
-                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
-                        <span>How long do credits last?</span>
-                        <span class="accordion-icon transition-transform duration-300">
-                            <i class="fas fa-chevron-down"></i>
-                        </span>
-                    </button>
-                    <div class="accordion-content px-6 pb-6">
-                        <p class="text-gray-700">
-                            Credits never expire! Once purchased, you can use them whenever you want without any time limitations. This gives you complete flexibility to master your tracks according to your own schedule.
-                        </p>
-                    </div>
+                <div class="faq-item">
+                    <div class="faq-q">Can I use my credits for any genre? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">Yes! All plans include access to every AI preset, whatever your style.</div>
                 </div>
-                
-                <!-- FAQ Item 3 -->
-                <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
-                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
-                        <span>What audio formats are supported?</span>
-                        <span class="accordion-icon transition-transform duration-300">
-                            <i class="fas fa-chevron-down"></i>
-                        </span>
-                    </button>
-                    <div class="accordion-content px-6 pb-6">
-                        <p class="text-gray-700">
-                            Masterify currently supports MP3 and WAV input formats. For the best quality results, we recommend uploading WAV files. Output formats depend on your subscription level, with higher tiers offering lossless WAV downloads.
-                        </p>
-                    </div>
+                <div class="faq-item">
+                    <div class="faq-q">Do my credits expire? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">No, your credits never expire. Use them whenever you want.</div>
                 </div>
-                
-                <!-- FAQ Item 4 -->
-                <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
-                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
-                        <span>How does the AI mastering work?</span>
-                        <span class="accordion-icon transition-transform duration-300">
-                            <i class="fas fa-chevron-down"></i>
-                        </span>
-                    </button>
-                    <div class="accordion-content px-6 pb-6">
-                        <p class="text-gray-700">
-                            Our system analyzes your audio to identify key characteristics such as genre, instrumentation, and dynamics. It then suggests the most appropriate preset from our collection, designed by professional audio engineers. You can accept this recommendation or choose a different preset based on your preferences.
-                        </p>
-                    </div>
+                <div class="faq-item">
+                    <div class="faq-q">What formats can I download? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">MP3 (all plans) and WAV (Studio plan).</div>
                 </div>
-                
-                <!-- FAQ Item 5 -->
-                <div class="accordion-item bg-white rounded-lg shadow-md overflow-hidden">
-                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
-                        <span>Can I get a refund if I'm not satisfied?</span>
-                        <span class="accordion-icon transition-transform duration-300">
-                            <i class="fas fa-chevron-down"></i>
-                        </span>
-                    </button>
-                    <div class="accordion-content px-6 pb-6">
-                        <p class="text-gray-700">
-                            We offer a satisfaction guarantee. If you're not happy with the results, please contact our support team within 7 days of your purchase, and we'll be happy to address your concerns, provide additional processing, or issue a refund if necessary.
-                        </p>
-                    </div>
+                <div class="faq-item">
+                    <div class="faq-q">Can I upgrade my plan later? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">Of course! You can upgrade at any time and keep your remaining credits.</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<!-- CTA Section -->
-<section class="py-16 bg-indigo-600 text-white">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-6">Ready to transform your sound?</h2>
-        <p class="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of producers who use Masterify to achieve professional-quality sound.
-        </p>
-        <div class="flex justify-center">
-            <a href="/upload" class="bg-white text-indigo-600 px-8 py-3 rounded-md text-lg font-semibold hover:bg-gray-100 transition">
-                Start Mastering Now
-            </a>
-        </div>
-    </div>
-</section>
-{% endblock %}
-
-{% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // FAQ accordion functionality
-        const accordionButtons = document.querySelectorAll('.accordion-button');
-        
-        accordionButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const accordionItem = this.parentNode;
-                
-                // Toggle active class
-                accordionItem.classList.toggle('active');
-                
-                // Close other accordion items
-                const siblings = Array.from(accordionItem.parentNode.children).filter(item => item !== accordionItem);
-                siblings.forEach(sibling => {
-                    sibling.classList.remove('active');
-                });
-            });
-        });
-        
-        // Add click event for pricing buttons
-        const pricingButtons = document.querySelectorAll('.pricing-card button');
-        pricingButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Check if user is logged in
-                axios.get('/auth/user')
-                    .then(response => {
-                        if (response.data.success) {
-                            // User is logged in, redirect to a "buy credits" page
-                            // This is just a placeholder - in a real app, this would connect to payment processing
-                            alert('This would connect to a payment processor in a production environment.');
-                        } else {
-                            // User is not logged in, prompt to sign up
-                            document.getElementById('signup-button').click();
-                        }
-                    })
-                    .catch(error => {
-                        // User is not logged in
-                        document.getElementById('signup-button').click();
-                    });
-            });
-        });
+// FAQ accordion
+const faqs = document.querySelectorAll('.faq-item');
+faqs.forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+        item.classList.toggle('open');
     });
+});
 </script>
 {% endblock %}
+
+{% block scripts %}{% endblock %}

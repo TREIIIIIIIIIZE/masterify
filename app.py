@@ -40,6 +40,9 @@ db.init_app(app)
 # Enable CORS
 CORS(app)
 
+# Configuration spéciale pour assurer que les visiteurs peuvent naviguer sans authentification
+app.config['LOGIN_DISABLED'] = True
+
 # Import routes after app initialization to avoid circular imports
 with app.app_context():
     # Import models and create tables

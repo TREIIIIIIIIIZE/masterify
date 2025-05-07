@@ -9,7 +9,13 @@ auth_bp = Blueprint('auth', __name__)
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'views.index'  # Redirect to home page instead of login
+login_manager.login_view = 'auth.login_page'  # Route pour la page de connexion
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    """Handle unauthorized access attempts by redirecting to login page with next parameter"""
+    from flask import request, redirect, url_for
+    return redirect(url_for('auth.login_page', next=request.path))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -73,6 +79,13 @@ def login():
             'credits': user.credits
         }
     })
+
+@auth_bp.route('/login_page')
+def login_page():
+    """Page de connexion/inscription"""
+    from flask import render_template, request
+    next_url = request.args.get('next', '')
+    return render_template('auth.html', next=next_url)
 
 @auth_bp.route('/logout')
 @login_required

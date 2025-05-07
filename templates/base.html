@@ -197,11 +197,11 @@
         const cancelButtons = document.querySelectorAll('.cancel-btn');
         
         loginButton.addEventListener('click', () => {
-            loginModal.classList.remove('hidden');
+            window.location.href = '/auth/login_page';
         });
         
         signupButton.addEventListener('click', () => {
-            signupModal.classList.remove('hidden');
+            window.location.href = '/auth/login_page?tab=signup';
         });
         
         cancelButtons.forEach(button => {

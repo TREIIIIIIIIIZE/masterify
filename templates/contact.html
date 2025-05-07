@@ -1,0 +1,401 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - Masterify{% endblock %}
+
+{% block head %}
+<style>
+    .contact-card {
+        transition: all 0.3s ease;
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .contact-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #6366F1;
+        font-size: 24px;
+        margin-bottom: 1rem;
+    }
+    
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(99, 102, 241, 0.1);
+        color: #6366F1;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+        background-color: #6366F1;
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #6366F1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Contact Us</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Have questions about our audio mastering service? We're here to help.
+            </p>
+        </div>
+        
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Email Contact Card -->
+            <div class="contact-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="contact-icon mx-auto">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Email Us</h3>
+                <p class="text-gray-600 mb-4">
+                    We'll respond to your message within 1 business day.
+                </p>
+                <a href="mailto:info@masterify.com" class="text-indigo-600 font-medium hover:text-indigo-800">
+                    info@masterify.com
+                </a>
+            </div>
+            
+            <!-- Phone Contact Card -->
+            <div class="contact-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="contact-icon mx-auto">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Call Us</h3>
+                <p class="text-gray-600 mb-4">
+                    Available Monday through Friday, 9am to 5pm EST.
+                </p>
+                <a href="tel:+18005551234" class="text-indigo-600 font-medium hover:text-indigo-800">
+                    +1 (800) 555-1234
+                </a>
+            </div>
+            
+            <!-- Social Media Card -->
+            <div class="contact-card bg-white p-6 rounded-lg shadow-md text-center">
+                <div class="contact-icon mx-auto">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Follow Us</h3>
+                <p class="text-gray-600 mb-4">
+                    Stay updated with our latest news and features.
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-6">Send Us a Message</h2>
+                
+                <form id="contact-form" class="contact-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-input" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="message" name="message" rows="6" class="form-input" required></textarea>
+                    </div>
+                    
+                    <div class="flex items-center mb-6">
+                        <input type="checkbox" id="newsletter" name="newsletter" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="newsletter" class="ml-2 block text-sm text-gray-700">
+                            Sign up for our newsletter to receive updates and special offers
+                        </label>
+                    </div>
+                    
+                    <div id="message-status" class="mb-6 hidden">
+                        <div id="success-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative hidden">
+                            <strong class="font-bold">Thank you!</strong>
+                            <span class="block sm:inline"> Your message has been sent successfully. We'll get back to you soon.</span>
+                        </div>
+                        <div id="error-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative hidden">
+                            <strong class="font-bold">Error!</strong>
+                            <span class="block sm:inline"> There was an error sending your message. Please try again later.</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary w-full py-3 px-4 flex justify-center">
+                        <span id="submit-text">Send Message</span>
+                        <span id="submit-spinner" class="spinner hidden ml-2"><i class="fas fa-circle-notch"></i></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="accordion-item bg-gray-50 rounded-lg shadow-sm overflow-hidden">
+                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
+                        <span>How quickly can I get support for technical issues?</span>
+                        <span class="accordion-icon transition-transform duration-300">
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6">
+                        <p class="text-gray-700">
+                            Our support team typically responds to technical issues within 24 hours during business days. For urgent matters, please use the live chat feature on our dashboard for faster assistance.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="accordion-item bg-gray-50 rounded-lg shadow-sm overflow-hidden">
+                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
+                        <span>Can I request a custom mastering preset?</span>
+                        <span class="accordion-icon transition-transform duration-300">
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6">
+                        <p class="text-gray-700">
+                            Yes! Enterprise level customers can request custom mastering presets tailored to their specific requirements. Please contact our sales team to discuss your needs and get a custom quote.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="accordion-item bg-gray-50 rounded-lg shadow-sm overflow-hidden">
+                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
+                        <span>Do you offer refunds if I'm not satisfied with the results?</span>
+                        <span class="accordion-icon transition-transform duration-300">
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6">
+                        <p class="text-gray-700">
+                            We have a satisfaction guarantee. If you're not happy with your mastered track, please contact our support team within 7 days of processing, and we'll work with you to address your concerns or issue a refund.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="accordion-item bg-gray-50 rounded-lg shadow-sm overflow-hidden">
+                    <button class="accordion-button w-full text-left p-6 font-semibold focus:outline-none flex justify-between items-center">
+                        <span>Can I use Masterify for commercial music releases?</span>
+                        <span class="accordion-icon transition-transform duration-300">
+                            <i class="fas fa-chevron-down"></i>
+                        </span>
+                    </button>
+                    <div class="accordion-content px-6 pb-6">
+                        <p class="text-gray-700">
+                            Absolutely! All tracks processed through Masterify are yours to use however you like, including commercial releases. We do not claim any rights to your audio content.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Visit Our Office</h2>
+                    <p class="text-gray-600 mb-6">
+                        If you're in the area, we'd love to meet you in person. Our studio is located in downtown Music City.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="text-indigo-600 mr-3 mt-1">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Address</h3>
+                                <p class="text-gray-600">
+                                    123 Harmony Lane<br>
+                                    Suite 400<br>
+                                    Music City, MC 10101
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-indigo-600 mr-3 mt-1">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Business Hours</h3>
+                                <p class="text-gray-600">
+                                    Monday - Friday: 9:00 AM - 5:00 PM<br>
+                                    Saturday - Sunday: Closed
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-indigo-600 mr-3 mt-1">
+                                <i class="fas fa-subway"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Getting Here</h3>
+                                <p class="text-gray-600">
+                                    Public Transit: Take the Blue Line to Music Square Station<br>
+                                    Parking: Available in the building garage
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-96 bg-gray-200 rounded-lg overflow-hidden shadow-md">
+                    <!-- This would be a real map in production, using a placeholder div for now -->
+                    <div class="w-full h-full flex items-center justify-center bg-gray-100">
+                        <div class="text-center p-4">
+                            <i class="fas fa-map-marked-alt text-5xl text-indigo-300 mb-4"></i>
+                            <p class="text-gray-600">Map Location: 123 Harmony Lane, Music City</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contact form submission
+        const contactForm = document.getElementById('contact-form');
+        const messageStatus = document.getElementById('message-status');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+        const submitText = document.getElementById('submit-text');
+        const submitSpinner = document.getElementById('submit-spinner');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                submitText.textContent = 'Sending...';
+                submitSpinner.classList.remove('hidden');
+                messageStatus.classList.add('hidden');
+                successMessage.classList.add('hidden');
+                errorMessage.classList.add('hidden');
+                
+                // Get form data
+                const formData = new FormData(contactForm);
+                const formObject = {};
+                formData.forEach((value, key) => {
+                    formObject[key] = value;
+                });
+                
+                // Simulate form submission (would be a real API call in production)
+                setTimeout(() => {
+                    // Reset loading state
+                    submitText.textContent = 'Send Message';
+                    submitSpinner.classList.add('hidden');
+                    
+                    // Show success message
+                    messageStatus.classList.remove('hidden');
+                    successMessage.classList.remove('hidden');
+                    
+                    // Reset form
+                    contactForm.reset();
+                }, 1500);
+                
+                // In a real implementation, this would be an API call:
+                /*
+                axios.post('/api/contact', formObject)
+                    .then(response => {
+                        submitText.textContent = 'Send Message';
+                        submitSpinner.classList.add('hidden');
+                        messageStatus.classList.remove('hidden');
+                        successMessage.classList.remove('hidden');
+                        contactForm.reset();
+                    })
+                    .catch(error => {
+                        submitText.textContent = 'Send Message';
+                        submitSpinner.classList.add('hidden');
+                        messageStatus.classList.remove('hidden');
+                        errorMessage.classList.remove('hidden');
+                    });
+                */
+            });
+        }
+        
+        // FAQ accordion functionality
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const accordionItem = this.parentNode;
+                
+                // Toggle active class
+                accordionItem.classList.toggle('active');
+                
+                // Close other accordion items
+                const siblings = Array.from(accordionItem.parentNode.children).filter(item => item !== accordionItem);
+                siblings.forEach(sibling => {
+                    sibling.classList.remove('active');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

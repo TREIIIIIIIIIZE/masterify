@@ -1,0 +1,554 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Audio - Masterify{% endblock %}
+
+{% block head %}
+<style>
+    /* Waveform container */
+    .waveform-container {
+        width: 100%;
+        height: 150px;
+        background-color: #f3f4f6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    /* Waveform canvas */
+    .waveform {
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Preset selection */
+    .preset-option {
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+    
+    .preset-option:hover {
+        border-color: #a5b4fc;
+        transform: translateY(-2px);
+    }
+    
+    .preset-option.selected {
+        border-color: #6366F1;
+        background-color: rgba(99, 102, 241, 0.1);
+    }
+    
+    /* Processing animation */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .spinner {
+        animation: spin 1s linear infinite;
+    }
+    
+    /* FilePond customization */
+    .filepond--panel-root {
+        background-color: #f3f4f6;
+        border: 2px dashed #d1d5db;
+    }
+    
+    .filepond--drop-label {
+        color: #6366F1;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .filepond--label-action {
+        text-decoration-color: #6366F1;
+    }
+    
+    /* Progress bar */
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #e5e7eb;
+        border-radius: 9999px;
+        overflow: hidden;
+    }
+    
+    .progress-bar-inner {
+        height: 100%;
+        background-color: #6366F1;
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Upload Your Audio</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Drop your audio file below and let our AI analyze and master it to perfection.
+                <span id="credits-info" class="font-medium text-indigo-600"></span>
+            </p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <!-- File upload area -->
+            <div class="bg-white p-8 rounded-lg shadow-md mb-8">
+                <h2 class="text-xl font-semibold mb-4">Step 1: Upload your track</h2>
+                
+                <div id="upload-container" class="mb-4">
+                    <input type="file" class="filepond" name="audio" id="audio-upload" />
+                </div>
+                
+                <div class="text-sm text-gray-500">
+                    <p>Supported formats: MP3, WAV • Maximum file size: 50MB</p>
+                </div>
+            </div>
+            
+            <!-- Audio waveform and preset selection (hidden until file is uploaded) -->
+            <div id="waveform-section" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
+                <h2 class="text-xl font-semibold mb-4">Step 2: Review and select preset</h2>
+                
+                <div class="waveform-container mb-6">
+                    <canvas id="waveform" class="waveform"></canvas>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-medium mb-2">Detected audio profile:</h3>
+                    <p id="audio-analysis" class="text-gray-700">
+                        <span id="suggested-preset-text" class="font-medium text-indigo-600"></span>
+                        is recommended for your track based on its characteristics.
+                    </p>
+                </div>
+                
+                <h3 class="font-medium mb-4">Select a mastering preset:</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="clean">
+                        <h4 class="font-semibold mb-1">Clean</h4>
+                        <p class="text-sm text-gray-600">Balanced mastering for acoustic and vocal-focused tracks</p>
+                    </div>
+                    
+                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="warm">
+                        <h4 class="font-semibold mb-1">Warm</h4>
+                        <p class="text-sm text-gray-600">Rich low-end with smooth highs for organic sound</p>
+                    </div>
+                    
+                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="lofi">
+                        <h4 class="font-semibold mb-1">Lo-Fi</h4>
+                        <p class="text-sm text-gray-600">Vintage character with subtle imperfections</p>
+                    </div>
+                    
+                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="trap">
+                        <h4 class="font-semibold mb-1">Trap</h4>
+                        <p class="text-sm text-gray-600">Heavy bass, punchy drums, and crisp highs</p>
+                    </div>
+                    
+                    <div class="preset-option p-4 rounded-lg cursor-pointer shadow-sm" data-preset="bright">
+                        <h4 class="font-semibold mb-1">Bright</h4>
+                        <p class="text-sm text-gray-600">Clear and detailed with emphasized highs</p>
+                    </div>
+                </div>
+                
+                <button id="process-button" class="btn-primary px-6 py-3 rounded-md w-full">
+                    Process Audio with <span id="selected-preset-text">Clean</span> Preset
+                </button>
+            </div>
+            
+            <!-- Processing section (hidden until processing starts) -->
+            <div id="processing-section" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
+                <h2 class="text-xl font-semibold mb-4">Step 3: Processing your audio</h2>
+                
+                <div class="flex flex-col items-center justify-center py-8">
+                    <div class="spinner text-4xl text-indigo-600 mb-4">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    
+                    <h3 class="text-lg font-medium mb-2">Mastering in progress...</h3>
+                    <p class="text-gray-600 mb-4">This may take a few moments depending on the length of your track.</p>
+                    
+                    <div class="w-full max-w-md">
+                        <div class="progress-bar">
+                            <div id="progress-bar-inner" class="progress-bar-inner" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text" class="text-sm text-gray-500 mt-2 text-center">Initializing...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results section (hidden until processing is complete) -->
+            <div id="results-section" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
+                <h2 class="text-xl font-semibold mb-4">Your mastered track is ready!</h2>
+                
+                <div class="waveform-container mb-6">
+                    <canvas id="processed-waveform" class="waveform"></canvas>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-medium mb-2">Processing details:</h3>
+                    <ul class="text-sm text-gray-700">
+                        <li class="flex items-center mb-1">
+                            <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                            Preset: <span id="results-preset" class="font-medium ml-1">Clean</span>
+                        </li>
+                        <li class="flex items-center mb-1">
+                            <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                            File format: <span id="results-format" class="font-medium ml-1">MP3, 320 kbps</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                            Credits used: <span class="font-medium ml-1">1</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a id="download-button" href="#" class="btn-primary text-center px-6 py-3 rounded-md flex-1">
+                        <i class="fas fa-download mr-2"></i> Download Mastered Track
+                    </a>
+                    <button id="new-upload-button" class="btn-secondary text-center px-6 py-3 rounded-md flex-1">
+                        <i class="fas fa-plus mr-2"></i> Master Another Track
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Not logged in message (shown when user is not logged in) -->
+            <div id="login-required" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
+                <div class="text-center py-8">
+                    <div class="text-5xl text-indigo-600 mb-4">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">Login Required</h2>
+                    <p class="text-gray-600 mb-6">You need to log in to use Masterify's audio mastering features.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button id="login-prompt-button" class="btn-primary px-6 py-3 rounded-md">
+                            Log In
+                        </button>
+                        <button id="signup-prompt-button" class="btn-secondary px-6 py-3 rounded-md">
+                            Sign Up
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- No credits message (shown when user has no credits) -->
+            <div id="no-credits" class="bg-white p-8 rounded-lg shadow-md mb-8 hidden">
+                <div class="text-center py-8">
+                    <div class="text-5xl text-indigo-600 mb-4">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2">No Credits Remaining</h2>
+                    <p class="text-gray-600 mb-6">You have used all your mastering credits. Purchase more to continue.</p>
+                    <a href="/pricing" class="btn-primary inline-block px-6 py-3 rounded-md">
+                        View Pricing Plans
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Globals
+        let uploadedFileName = null;
+        let originalFileName = null;
+        let selectedPreset = 'clean';
+        let processedFileId = null;
+        let isLoggedIn = false;
+        let userCredits = 0;
+        
+        // DOM elements
+        const uploadContainer = document.getElementById('upload-container');
+        const waveformSection = document.getElementById('waveform-section');
+        const processingSection = document.getElementById('processing-section');
+        const resultsSection = document.getElementById('results-section');
+        const loginRequired = document.getElementById('login-required');
+        const noCredits = document.getElementById('no-credits');
+        const creditsInfo = document.getElementById('credits-info');
+        const presetOptions = document.querySelectorAll('.preset-option');
+        const processButton = document.getElementById('process-button');
+        const downloadButton = document.getElementById('download-button');
+        const newUploadButton = document.getElementById('new-upload-button');
+        const loginPromptButton = document.getElementById('login-prompt-button');
+        const signupPromptButton = document.getElementById('signup-prompt-button');
+        const selectedPresetText = document.getElementById('selected-preset-text');
+        const suggestedPresetText = document.getElementById('suggested-preset-text');
+        const resultsPreset = document.getElementById('results-preset');
+        const resultsFormat = document.getElementById('results-format');
+        const progressBarInner = document.getElementById('progress-bar-inner');
+        const progressText = document.getElementById('progress-text');
+        const waveformCanvas = document.getElementById('waveform');
+        const processedWaveformCanvas = document.getElementById('processed-waveform');
+        
+        // Check auth status
+        async function checkAuthStatus() {
+            try {
+                const response = await axios.get('/auth/user');
+                if (response.data.success) {
+                    isLoggedIn = true;
+                    userCredits = response.data.user.credits;
+                    creditsInfo.textContent = `You have ${userCredits} mastering credit${userCredits !== 1 ? 's' : ''} remaining.`;
+                    
+                    // Show appropriate section based on credits
+                    if (userCredits <= 0) {
+                        uploadContainer.classList.add('hidden');
+                        noCredits.classList.remove('hidden');
+                    }
+                } else {
+                    isLoggedIn = false;
+                    uploadContainer.classList.add('hidden');
+                    loginRequired.classList.remove('hidden');
+                }
+            } catch (error) {
+                isLoggedIn = false;
+                uploadContainer.classList.add('hidden');
+                loginRequired.classList.remove('hidden');
+            }
+        }
+        
+        // Initialize FilePond
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        
+        const pond = FilePond.create(document.querySelector('input[type="file"]'), {
+            allowFileTypeValidation: true,
+            acceptedFileTypes: ['audio/mp3', 'audio/wav', 'audio/mpeg'],
+            labelFileTypeNotAllowed: 'Only MP3 and WAV files are supported',
+            fileValidateTypeLabelExpectedTypes: 'Accepts MP3 and WAV',
+            labelIdle: 'Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>',
+            server: {
+                process: {
+                    url: '/api/upload',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': 'your-csrf-token',
+                    },
+                    withCredentials: true,
+                    onload: (response) => {
+                        const data = JSON.parse(response);
+                        if (data.success) {
+                            uploadedFileName = data.filename;
+                            originalFileName = data.original_filename;
+                            
+                            // Show waveform section and load waveform data
+                            waveformSection.classList.remove('hidden');
+                            loadWaveform(uploadedFileName);
+                            
+                            // Set suggested preset
+                            const suggestedPreset = data.suggested_preset;
+                            suggestedPresetText.textContent = capitalizeFirstLetter(suggestedPreset);
+                            
+                            // Select the suggested preset
+                            selectPreset(suggestedPreset);
+                        }
+                        return response;
+                    },
+                    onerror: (response) => {
+                        console.error('Upload error:', response);
+                        alert('Error uploading file. Please try again.');
+                        return response;
+                    }
+                }
+            }
+        });
+        
+        // Load waveform data
+        async function loadWaveform(filename) {
+            try {
+                const response = await axios.get(`/api/waveform/${filename}`);
+                if (response.data.success) {
+                    drawWaveform(waveformCanvas, response.data.waveform);
+                }
+            } catch (error) {
+                console.error('Error loading waveform:', error);
+            }
+        }
+        
+        // Draw waveform on canvas
+        function drawWaveform(canvas, data) {
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.parentNode.offsetWidth;
+            const height = canvas.height = canvas.parentNode.offsetHeight;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Set styling
+            ctx.fillStyle = '#6366F1';
+            
+            // Calculate bar width based on data points
+            const barWidth = width / data.length;
+            const barSpacing = barWidth * 0.2;
+            const barWidthWithSpacing = barWidth - barSpacing;
+            
+            // Draw each bar
+            for (let i = 0; i < data.length; i++) {
+                const x = i * barWidth;
+                const barHeight = data[i] * height * 0.8;
+                const y = (height - barHeight) / 2;
+                
+                ctx.fillRect(x, y, barWidthWithSpacing, barHeight);
+            }
+        }
+        
+        // Select preset
+        function selectPreset(preset) {
+            // Remove selected class from all presets
+            presetOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to chosen preset
+            const chosenPreset = document.querySelector(`.preset-option[data-preset="${preset}"]`);
+            if (chosenPreset) {
+                chosenPreset.classList.add('selected');
+                selectedPreset = preset;
+                selectedPresetText.textContent = capitalizeFirstLetter(preset);
+            }
+        }
+        
+        // Preset selection event listeners
+        presetOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const preset = this.dataset.preset;
+                selectPreset(preset);
+            });
+        });
+        
+        // Process button click handler
+        processButton.addEventListener('click', async function() {
+            if (!uploadedFileName) {
+                alert('Please upload a file first.');
+                return;
+            }
+            
+            // Check if user is logged in and has credits
+            if (!isLoggedIn) {
+                waveformSection.classList.add('hidden');
+                loginRequired.classList.remove('hidden');
+                return;
+            }
+            
+            if (userCredits <= 0) {
+                waveformSection.classList.add('hidden');
+                noCredits.classList.remove('hidden');
+                return;
+            }
+            
+            // Hide waveform section and show processing section
+            waveformSection.classList.add('hidden');
+            processingSection.classList.remove('hidden');
+            
+            // Simulate progress (in production, this would be real-time progress from the server)
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                updateProgress(progress);
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                }
+            }, 500);
+            
+            try {
+                // Process the audio file
+                const response = await axios.post('/api/process', {
+                    filename: uploadedFileName,
+                    original_filename: originalFileName,
+                    preset: selectedPreset
+                });
+                
+                if (response.data.success) {
+                    // Clear the interval if it's still running
+                    clearInterval(progressInterval);
+                    updateProgress(100);
+                    
+                    // Update user credits
+                    userCredits = response.data.credits_remaining;
+                    creditsInfo.textContent = `You have ${userCredits} mastering credit${userCredits !== 1 ? 's' : ''} remaining.`;
+                    
+                    // Set download link and processed file info
+                    processedFileId = response.data.file_id;
+                    downloadButton.href = `/api/download/${processedFileId}`;
+                    
+                    // Update results info
+                    resultsPreset.textContent = capitalizeFirstLetter(selectedPreset);
+                    resultsFormat.textContent = 'MP3, 320 kbps';
+                    
+                    // Hide processing section and show results
+                    setTimeout(() => {
+                        processingSection.classList.add('hidden');
+                        resultsSection.classList.remove('hidden');
+                        
+                        // Draw placeholder processed waveform (would be replaced with actual processed waveform data)
+                        // This is just a simple visualization enhancement for now
+                        const placeholderData = Array(50).fill().map(() => Math.random() * 0.8 + 0.2);
+                        drawWaveform(processedWaveformCanvas, placeholderData);
+                    }, 1000);
+                } else {
+                    throw new Error(response.data.message || 'Processing failed');
+                }
+            } catch (error) {
+                clearInterval(progressInterval);
+                console.error('Processing error:', error);
+                alert('Error processing audio: ' + (error.response?.data?.message || error.message || 'Unknown error'));
+                
+                // Reset UI
+                processingSection.classList.add('hidden');
+                waveformSection.classList.remove('hidden');
+            }
+        });
+        
+        // Update progress bar
+        function updateProgress(percent) {
+            progressBarInner.style.width = `${percent}%`;
+            
+            if (percent < 30) {
+                progressText.textContent = 'Analyzing audio...';
+            } else if (percent < 60) {
+                progressText.textContent = 'Applying mastering preset...';
+            } else if (percent < 90) {
+                progressText.textContent = 'Finalizing your track...';
+            } else {
+                progressText.textContent = 'Mastering complete!';
+            }
+        }
+        
+        // New upload button click handler
+        newUploadButton.addEventListener('click', function() {
+            // Reset all sections
+            resultsSection.classList.add('hidden');
+            waveformSection.classList.add('hidden');
+            processingSection.classList.add('hidden');
+            
+            // Show upload container and reset FilePond
+            uploadContainer.classList.remove('hidden');
+            pond.removeFiles();
+            
+            // Reset variables
+            uploadedFileName = null;
+            originalFileName = null;
+            processedFileId = null;
+        });
+        
+        // Login prompt button click handler
+        loginPromptButton.addEventListener('click', function() {
+            document.getElementById('login-button').click();
+        });
+        
+        // Signup prompt button click handler
+        signupPromptButton.addEventListener('click', function() {
+            document.getElementById('signup-button').click();
+        });
+        
+        // Helper function to capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Initialize auth check
+        checkAuthStatus();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,148 @@
+/* 
+ * Tailwind CSS utility classes for Masterify
+ * Included from CDN in the base.html template
+ * This file provides additional Tailwind utility classes and custom styling
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* Adding Tailwind directives for reference - the actual Tailwind is loaded via CDN */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Tailwind-like utility classes */
+.text-primary {
+    color: #6366F1; /* Indigo */
+}
+
+.text-secondary {
+    color: #3B82F6; /* Blue */
+}
+
+.text-accent {
+    color: #10B981; /* Emerald */
+}
+
+.bg-primary {
+    background-color: #6366F1; /* Indigo */
+}
+
+.bg-secondary {
+    background-color: #3B82F6; /* Blue */
+}
+
+.bg-accent {
+    background-color: #10B981; /* Emerald */
+}
+
+.border-primary {
+    border-color: #6366F1; /* Indigo */
+}
+
+.border-secondary {
+    border-color: #3B82F6; /* Blue */
+}
+
+.border-accent {
+    border-color: #10B981; /* Emerald */
+}
+
+/* Hover states */
+.hover\:text-primary:hover {
+    color: #6366F1; /* Indigo */
+}
+
+.hover\:text-secondary:hover {
+    color: #3B82F6; /* Blue */
+}
+
+.hover\:text-accent:hover {
+    color: #10B981; /* Emerald */
+}
+
+.hover\:bg-primary:hover {
+    background-color: #6366F1; /* Indigo */
+}
+
+.hover\:bg-secondary:hover {
+    background-color: #3B82F6; /* Blue */
+}
+
+.hover\:bg-accent:hover {
+    background-color: #10B981; /* Emerald */
+}
+
+/* Focus states */
+.focus\:border-primary:focus {
+    border-color: #6366F1; /* Indigo */
+}
+
+.focus\:border-secondary:focus {
+    border-color: #3B82F6; /* Blue */
+}
+
+.focus\:border-accent:focus {
+    border-color: #10B981; /* Emerald */
+}
+
+/* Animation utility classes */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.slide-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Additional utility classes for common patterns */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    @apply font-medium rounded-md transition-all duration-300;
+}
+
+.btn-primary {
+    @apply bg-primary text-white hover:bg-indigo-700;
+}
+
+.btn-secondary {
+    @apply bg-secondary text-white hover:bg-blue-700;
+}
+
+.btn-accent {
+    @apply bg-accent text-white hover:bg-emerald-700;
+}
+
+.btn-outline-primary {
+    @apply border border-primary text-primary hover:bg-indigo-50;
+}
+
+.btn-outline-secondary {
+    @apply border border-secondary text-secondary hover:bg-blue-50;
+}
+
+.btn-outline-accent {
+    @apply border border-accent text-accent hover:bg-emerald-50;
+}

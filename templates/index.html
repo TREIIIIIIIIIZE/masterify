@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+
+{% block title %}Masterify - Professional Audio Mastering{% endblock %}
+
+{% block head %}
+<style>
+    /* Parallax effect */
+    .parallax {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 500px;
+    }
+    
+    /* Hero section */
+    .hero {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 10;
+    }
+    
+    /* Features section */
+    .feature-icon {
+        background-color: rgba(99, 102, 241, 0.1);
+        border-radius: 9999px;
+        padding: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #6366F1;
+    }
+    
+    /* How it works steps */
+    .step-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 9999px;
+        background-color: #6366F1;
+        color: white;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    /* Testimonials */
+    .testimonial-card {
+        position: relative;
+    }
+    
+    .testimonial-card::before {
+        content: """;
+        position: absolute;
+        top: -2rem;
+        left: 1rem;
+        font-size: 5rem;
+        color: rgba(99, 102, 241, 0.2);
+        font-family: serif;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero section with parallax -->
+<section class="hero parallax" style="background-image: url('https://pixabay.com/get/ge32a53812fd0c2bdc47762672c82310e9ec2f7cdaf7a58c642c6e5ae3d8e2d862c60a1bc8ef5d6215eb5989d20581c101fcb2cd772d650ebf51dd698468ec68e_1280.jpg');">
+    <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+    <div class="container mx-auto px-4 h-full flex items-center hero-content">
+        <div class="max-w-3xl text-white">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Professional Audio Mastering Made Simple</h1>
+            <p class="text-xl mb-8">Transform your tracks with industry-standard mastering. One click, professional results.</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="/upload" class="btn-primary text-center px-8 py-3 rounded-md text-lg font-semibold">
+                    Try for Free
+                </a>
+                <a href="/pricing" class="btn-secondary text-center px-8 py-3 rounded-md text-lg font-semibold">
+                    View Pricing
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Masterify Your Sound</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Professional audio mastering tools powered by intelligent algorithms that analyze your track and apply the perfect processing.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="flex flex-col items-center text-center slide-up">
+                <div class="feature-icon text-3xl mb-6">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Easy Upload</h3>
+                <p class="text-gray-600">Simple drag and drop interface for your audio files. Supports WAV and MP3 formats.</p>
+            </div>
+            
+            <div class="flex flex-col items-center text-center slide-up" style="animation-delay: 0.2s;">
+                <div class="feature-icon text-3xl mb-6">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Intelligent Processing</h3>
+                <p class="text-gray-600">Automatic analysis chooses the perfect preset for your track's style and genre.</p>
+            </div>
+            
+            <div class="flex flex-col items-center text-center slide-up" style="animation-delay: 0.4s;">
+                <div class="feature-icon text-3xl mb-6">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Instant Results</h3>
+                <p class="text-gray-600">Download your mastered track immediately with enhanced clarity, loudness, and depth.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Waveform visual section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-bold mb-6">Professional Quality Audio</h2>
+                <p class="text-lg text-gray-600 mb-6">Experience studio-quality mastering with our custom-designed presets:</p>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <span class="font-semibold">Clean Preset</span> - Balanced mastering for acoustic and vocal-focused tracks
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <span class="font-semibold">Warm Preset</span> - Rich low-end with smooth highs for organic sound
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <span class="font-semibold">Lo-Fi Preset</span> - Vintage character with subtle imperfections
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <span class="font-semibold">Trap Preset</span> - Heavy bass, punchy drums, and crisp highs
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-indigo-600 mr-2"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <span class="font-semibold">Bright Preset</span> - Clear and detailed with emphasized highs
+                        </div>
+                    </li>
+                </ul>
+                <div class="mt-8">
+                    <a href="/upload" class="btn-primary inline-block px-6 py-3 rounded-md">Try it Now</a>
+                </div>
+            </div>
+            <div>
+                <img src="https://pixabay.com/get/ga4931e798cb0e4a8e0bcd6a886778c0c7670c01242fcd5e752b75d770c0a97611063cb6380a01b6de0bd8b0cf4d163eaecef1fe458eb1220791b3e827ff5e62d_1280.jpg" alt="Audio waveform" class="rounded-lg shadow-xl">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">How It Works</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="flex flex-col items-center text-center">
+                <div class="step-number">1</div>
+                <h3 class="text-xl font-bold mb-4">Upload Your Track</h3>
+                <p class="text-gray-600">Drag and drop your WAV or MP3 file. We support files up to 50MB.</p>
+                <div class="mt-4 text-5xl text-indigo-600">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="step-number">2</div>
+                <h3 class="text-xl font-bold mb-4">Select a Preset</h3>
+                <p class="text-gray-600">Our system analyzes your track and suggests the best preset, or choose your own.</p>
+                <div class="mt-4 text-5xl text-indigo-600">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="step-number">3</div>
+                <h3 class="text-xl font-bold mb-4">Download Mastered Track</h3>
+                <p class="text-gray-600">Receive your professionally mastered track ready for streaming or distribution.</p>
+                <div class="mt-4 text-5xl text-indigo-600">
+                    <i class="fas fa-download"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">What Our Users Say</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="testimonial-card bg-white p-8 rounded-lg shadow-lg">
+                <div class="mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">"Masterify transformed my home recording into a professional-sounding track. The difference is night and day!"</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">JD</div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold">John Doe</h4>
+                        <p class="text-sm text-gray-500">Indie Musician</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card bg-white p-8 rounded-lg shadow-lg">
+                <div class="mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">"I was skeptical at first, but the trap preset gave my beats the punch and clarity they needed. Definitely worth it!"</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">AS</div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold">Alex Smith</h4>
+                        <p class="text-sm text-gray-500">Beatmaker</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card bg-white p-8 rounded-lg shadow-lg">
+                <div class="mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">"The lo-fi preset gave my tracks the vintage warmth I was looking for. Quick, easy, and sounds professional!"</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold">SJ</div>
+                    <div class="ml-4">
+                        <h4 class="font-semibold">Sarah Johnson</h4>
+                        <p class="text-sm text-gray-500">Lo-Fi Producer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA section -->
+<section class="py-16 bg-indigo-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to transform your sound?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">Sign up today and receive one free mastering credit to experience the difference.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="/upload" class="bg-white text-indigo-600 px-8 py-3 rounded-md text-lg font-semibold hover:bg-gray-100 transition">Try for Free</a>
+            <a href="/pricing" class="bg-indigo-800 px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-900 transition">View Pricing</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Parallax effect
+    window.addEventListener('scroll', function() {
+        const parallax = document.querySelector('.parallax');
+        let scrollPosition = window.pageYOffset;
+        parallax.style.backgroundPositionY = scrollPosition * 0.5 + 'px';
+    });
+    
+    // Animation on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.slide-up');
+            
+            elements.forEach(function(element) {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = 1;
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Initial check
+        animateOnScroll();
+        
+        // Check on scroll
+        window.addEventListener('scroll', animateOnScroll);
+    });
+</script>
+{% endblock %}

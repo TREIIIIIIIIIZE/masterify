@@ -41,3 +41,7 @@ user_references/
 
 # Base de données SQLite
 instance/
+
+# Fichiers spécifiques au projet
+stripe.exe
+uv.lock

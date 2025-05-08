@@ -1,0 +1,450 @@
+{% extends 'base.html' %}
+
+{% block title %}MASTERIFY - Drop Your Track, Bring the Sauce{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+    
+    .dot-pattern {
+        background-image: radial-gradient(#333333 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.3;
+        z-index: 0;
+    }
+    
+    .home-glow {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(227, 41, 255, 0.3) 0%, rgba(138, 43, 226, 0.1) 30%, transparent 70%);
+        filter: blur(100px);
+        z-index: 0;
+    }
+    
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e329ff;
+        color: #000;
+        font-weight: 700;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-size: 1.125rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 0 20px rgba(227, 41, 255, 0.3);
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: translateX(-100%);
+    }
+    
+    .cta-button:hover::before {
+        transform: translateX(100%);
+        transition: all 0.8s ease;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(227, 41, 255, 0.5);
+    }
+    
+    .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        color: white;
+        font-weight: 600;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(227, 41, 255, 0.3);
+        text-transform: uppercase;
+    }
+    
+    .secondary-button:hover {
+        border-color: #e329ff;
+        transform: translateY(-2px);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(227, 41, 255, 0.1));
+        border: 1px solid rgba(227, 41, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        color: #e329ff;
+        font-size: 1.5rem;
+    }
+    
+    .feature-card {
+        background-color: rgba(20, 20, 20, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(138, 43, 226, 0.1);
+        border-color: rgba(227, 41, 255, 0.3);
+    }
+    
+    .glow-text {
+        text-shadow: 0 0 20px rgba(227, 41, 255, 0.5);
+    }
+    
+    .main-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 5rem;
+        line-height: 1;
+        letter-spacing: -1px;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to bottom right, #ffffff, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 3rem;
+        }
+    }
+    
+    .step-card {
+        background-color: rgba(20, 20, 20, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .step-number {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 4rem;
+        font-weight: 900;
+        opacity: 0.2;
+        color: #e329ff;
+        line-height: 1;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .floating-image {
+        animation: float 3s ease-in-out infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center py-20 overflow-hidden">
+    <!-- Background elements -->
+    <div class="absolute inset-0">
+        <div class="dot-pattern"></div>
+        <div class="home-glow" style="top: -100px; left: -100px;"></div>
+        <div class="home-glow" style="bottom: -120px; right: -120px;"></div>
+        <div class="home-glow" style="bottom: 10%; left: 50%; transform: translateX(-50%);"></div>
+    </div>
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7">
+                <div class="badge mb-4">PROFESSIONAL AUDIO MASTERING</div>
+                <h1 class="main-title">
+                    PULL UP YOUR TRACK<br>
+                    <span class="madmonq-purple">AND LET ME BRING</span><br>
+                    THE SAUCE
+                </h1>
+                <p class="madmonq-subtitle mb-8">
+                    Transform your tracks into studio-quality hits with AI-powered mastering.
+                    No technical skills required – just drop your track and get results that hit hard.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                    <a href="/upload" class="cta-button">
+                        Drop Your Track
+                    </a>
+                    <a href="/pricing" class="secondary-button">
+                        View Pricing
+                    </a>
+                </div>
+                <div class="mt-8 text-gray-400 text-sm flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    1 free credit when you sign up
+                </div>
+            </div>
+            <div class="lg:col-span-5 flex justify-center items-center">
+                <div class="relative hero-image-glow" style="max-width:600px;">
+                    <img src="{{ url_for('static', filename='images/masterify-retro-pc.png') }}"
+                         alt="Masterify retro computer"
+                         class="floating-image"
+                         style="width:100%;height:auto;display:block;border-radius:20px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 relative border-t border-gray-800">
+    <div class="dot-pattern opacity-20"></div>
+    <div class="home-glow absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10"></div>
+    
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <div class="badge mx-auto mb-4">UNLEASH YOUR SOUND</div>
+            <h2 class="text-4xl font-bold mb-6">LEVEL UP YOUR TRACKS</h2>
+            <p class="text-gray-400 text-lg">
+                Our AI-powered mastering engine brings professional sound quality to your tracks with just one click.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="feature-card">
+                <div class="feature-icon mx-auto">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="text-xl font-bold text-center mb-3">ONE-CLICK MASTERING</h3>
+                <p class="text-gray-400 text-center">
+                    Upload your track and get professional results in seconds with our automatic mastering technology.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon mx-auto">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <h3 class="text-xl font-bold text-center mb-3">GENRE-SPECIFIC PRESETS</h3>
+                <p class="text-gray-400 text-center">
+                    Choose from trap, lo-fi, clean, and warm presets tailored to your specific sound.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon mx-auto">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="text-xl font-bold text-center mb-3">STUDIO QUALITY</h3>
+                <p class="text-gray-400 text-center">
+                    Get pro-level sound that competes with major releases without expensive studio time.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 relative border-t border-gray-800">
+    <div class="dot-pattern opacity-20"></div>
+    
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <div class="badge mx-auto mb-4">THE PROCESS</div>
+            <h2 class="text-4xl font-bold mb-6">HOW IT WORKS</h2>
+            <p class="text-gray-400 text-lg">
+                Three simple steps to transform your track from raw to ready
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="text-purple-500 text-3xl mb-6">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">UPLOAD</h3>
+                <p class="text-gray-400">
+                    Drop your audio file on our platform. We accept WAV and MP3 formats up to 50MB.
+                </p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="text-purple-500 text-3xl mb-6">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">PROCESS</h3>
+                <p class="text-gray-400">
+                    Our AI analyzes your track and applies the perfect preset or choose your own style.
+                </p>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="text-purple-500 text-3xl mb-6">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">DOWNLOAD</h3>
+                <p class="text-gray-400">
+                    Get your professionally mastered track instantly, ready to share with the world.
+                </p>
+            </div>
+        </div>
+        
+        <div class="mt-16 text-center">
+            <a href="/upload" class="cta-button mx-auto">
+                START MASTERING NOW
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <div class="dot-pattern w-full h-full"></div>
+        <div class="home-glow" style="top: -100px; left: -100px;"></div>
+        <div class="home-glow" style="bottom: -120px; right: -120px;"></div>
+    </div>
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="badge mx-auto mb-4">GET STARTED</div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">PULL UP YOUR TRACK</h2>
+            <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                Transform your sound today with one free credit when you sign up
+            </p>
+            <a href="/upload" class="cta-button mx-auto text-lg px-8 py-4">
+                <i class="fas fa-music mr-2"></i>
+                PULL UP YOUR TRACK
+            </a>
+            <p class="mt-8 text-gray-500">No credit card required. One free mastering credit included.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add parallax effect to purple glows
+        window.addEventListener('mousemove', function(e) {
+            const glows = document.querySelectorAll('.home-glow');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            glows.forEach(glow => {
+                const speed = 30;
+                const xPos = (0.5 - x) * speed;
+                const yPos = (0.5 - y) * speed;
+                
+                glow.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            });
+        });
+        
+        // Animate elements on scroll
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.feature-card, .step-card');
+            
+            elements.forEach(function(element, index) {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    setTimeout(() => {
+                        element.style.opacity = 1;
+                        element.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        };
+        
+        // Set initial state
+        const cards = document.querySelectorAll('.feature-card, .step-card');
+        cards.forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+        });
+        
+        // Initial check
+        setTimeout(animateOnScroll, 300);
+        
+        // Check on scroll
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Add shimmer effect to CTA buttons
+        const buttons = document.querySelectorAll('.cta-button');
+        
+        const addShimmer = () => {
+            buttons.forEach(button => {
+                button.classList.add('shimmer');
+                setTimeout(() => {
+                    button.classList.remove('shimmer');
+                }, 1000);
+            });
+        };
+        
+        // Add shimmer effect every 5 seconds
+        setInterval(addShimmer, 5000);
+        
+        // Initial shimmer
+        setTimeout(addShimmer, 1000);
+    });
+</script>
+<style>
+    .shimmer::before {
+        transform: translateX(100%);
+        transition: all 1s ease;
+    }
+    
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(138, 43, 226, 0.1);
+        border: 1px solid rgba(227, 41, 255, 0.3);
+        color: #e329ff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}

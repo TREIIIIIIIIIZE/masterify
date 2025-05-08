@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Masterify{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background: #0a0a0a;
+        color: #fff;
+        font-family: 'Inter', 'Montserrat', sans-serif;
+        min-height: 100vh;
+    }
+    .dashboard-container {
+        max-width: 700px;
+        margin: 3rem auto 4rem auto;
+        background: rgba(20,20,30,0.85);
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 32px 0 #a855f733;
+        padding: 2.5rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, #fff, #a855f7 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: -1px;
+    }
+    .credits-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1.2rem;
+        border-radius: 9999px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 12px #e329ff33;
+    }
+    .buy-btn {
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 999px;
+        padding: 0.9rem 2.5rem;
+        margin-top: 1.5rem;
+        box-shadow: 0 2px 12px #e329ff33;
+        transition: background 0.3s, transform 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+    .buy-btn:hover {
+        background: linear-gradient(90deg, #a855f7, #e329ff);
+        transform: translateY(-3px) scale(1.04);
+    }
+    .dashboard-section {
+        margin-top: 2.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Welcome, {{ user.username }} 👋</h1>
+    <div class="credits-badge">
+        <i class="fas fa-coins mr-2"></i>
+        {{ user.credits }} credit{% if user.credits != 1 %}s{% endif %} remaining
+    </div>
+    <div class="mb-4">
+        <span class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-1 px-4 rounded-full text-sm shadow">
+            Current Plan: {{ user.plan|capitalize if user.plan else 'Starter' }}
+        </span>
+    </div>
+    <form action="{{ url_for('stripe.create_checkout_session', pack_id='credit_pack_20') }}" method="POST">
+        <button type="submit" class="buy-btn">
+            <i class="fas fa-plus mr-2"></i> Buy More Credits
+        </button>
+    </form>
+    <div class="dashboard-section">
+        <h2 class="text-xl font-bold mb-2">Your Plan</h2>
+        <p class="text-gray-300 mb-4">You can upgrade your plan at any time. All your credits are available here.</p>
+        <ul class="list-disc ml-6 text-gray-400">
+            <li>All AI presets included</li>
+            <li>MP3 & WAV downloads</li>
+            <li>Priority processing (Pro & Studio)</li>
+            <li>No expiration on credits</li>
+        </ul>
+    </div>
+    <div class="dashboard-section">
+        <h2 class="text-xl font-bold mb-2">Need more?</h2>
+        <p class="text-gray-400">You can buy more credits at any time and they will be added to your account instantly after payment.</p>
+    </div>
+    <div class="mt-8 text-center">
+        <a href="/" class="buy-btn" style="background:linear-gradient(90deg,#6366f1,#a855f7);font-size:1rem;padding:0.7rem 2rem;">
+            <i class="fas fa-home mr-2"></i>Go to Home
+        </a>
+    </div>
+</div>
+{% endblock %}

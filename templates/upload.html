@@ -1,0 +1,1667 @@
+{% extends 'base.html' %}
+
+{% block title %}MASTERIFY - Upload Your Track{% endblock %}
+
+{% block head %}
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+<style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+    
+    .dot-pattern {
+        background-image: radial-gradient(#333333 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.3;
+        z-index: 0;
+    }
+    
+    .purple-glow {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(227, 41, 255, 0.3) 0%, rgba(138, 43, 226, 0.1) 30%, transparent 70%);
+        filter: blur(100px);
+        z-index: 0;
+    }
+    
+    .upload-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .preset-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+        .preset-grid {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    }
+    
+    .preset-card {
+        background-color: rgba(20, 20, 20, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+    }
+    
+    .preset-card:hover {
+        border-color: #e329ff;
+        transform: translateY(-2px);
+        background-color: rgba(138, 43, 226, 0.1);
+    }
+    
+    .preset-card.active {
+        border-color: #e329ff;
+        background-color: rgba(138, 43, 226, 0.2);
+    }
+    
+    .preset-icon {
+        font-size: 3rem;
+        color: #e329ff;
+        margin-bottom: 1rem;
+    }
+    
+    .login-prompt {
+        text-align: center;
+        max-width: 500px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: rgba(20, 20, 20, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+    }
+    
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e329ff;
+        color: #000;
+        font-weight: 700;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-size: 1.125rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 0 20px rgba(227, 41, 255, 0.3);
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: translateX(-100%);
+    }
+    
+    .cta-button:hover::before {
+        transform: translateX(100%);
+        transition: all 0.8s ease;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(227, 41, 255, 0.5);
+    }
+    
+    .cta-button:disabled {
+        background-color: #666;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        color: white;
+        font-weight: 600;
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(227, 41, 255, 0.3);
+        text-transform: uppercase;
+    }
+    
+    .secondary-button:hover {
+        border-color: #e329ff;
+        transform: translateY(-2px);
+    }
+    
+    /* FilePond customization */
+    .filepond--panel-root {
+        background-color: rgba(30, 30, 30, 0.8);
+        border: 2px dashed #444;
+    }
+    
+    .filepond--drop-label {
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .filepond--label-action {
+        text-decoration-color: #e329ff;
+        color: #e329ff;
+    }
+    
+    /* Waveform */
+    .waveform-container {
+        width: 100%;
+        height: 400px;
+        background-color: rgba(20, 20, 20, 0.7);
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid #333;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+    }
+    
+    /* Full player container */
+    .player-container {
+        width: 100%;
+        background-color: rgba(15, 15, 15, 0.7);
+        border-radius: 12px;
+        border: 1px solid #333;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    /* Controls container */
+    .controls-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+    
+    /* Left controls group */
+    .controls-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: 60px; /* Même taille que le placeholder à droite */
+    }
+    
+    /* Right controls group */
+    .controls-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        width: 60px;
+    }
+    
+    /* Play button styling - more prominent */
+    #play-button {
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        background: linear-gradient(135deg, #9333ea, #e329ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(227, 41, 255, 0.4);
+        font-size: 1.5rem;
+    }
+    
+    #play-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(227, 41, 255, 0.6);
+    }
+    
+    /* Timeline container */
+    .timeline-container {
+        position: relative;
+        height: 12px;
+        background-color: rgba(20, 20, 20, 0.8);
+        border-radius: 6px;
+        cursor: pointer;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        margin: 15px 0;
+    }
+    
+    /* Timeline progress */
+    #timeline-progress {
+        position: absolute;
+        height: 100%;
+        background: linear-gradient(90deg, #9333ea, #ec4899);
+        border-radius: 6px 0 0 6px;
+        transition: width 0.1s linear;
+    }
+    
+    /* Timeline cursor */
+    #timeline-cursor {
+        position: absolute;
+        width: 5px;
+        height: 160%;
+        top: -30%;
+        background-color: #e329ff;
+        opacity: 0.9;
+        transform: translateX(-50%);
+        pointer-events: none;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Timeline hover effect */
+    .timeline-container:hover #timeline-cursor {
+        width: 7px;
+        background-color: #fff;
+    }
+    
+    /* Time display */
+    .time-display {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+    }
+    
+    /* Track info styling */
+    .track-info {
+        padding: 15px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 10px;
+        flex-grow: 1;
+        text-align: center;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    #track-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        background: linear-gradient(90deg, #fff, #e0e0e0);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 10px;
+    }
+    
+    #track-details {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 10px;
+    }
+    
+    /* Download button styling */
+    .download-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 25px;
+    }
+    
+    #download-button {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        min-width: 320px;
+        justify-content: center;
+    }
+    
+    #download-button i {
+        font-size: 1.3rem;
+    }
+    
+    /* Keyboard shortcuts info */
+    .keyboard-shortcuts {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        background-color: rgba(20, 20, 20, 0.5);
+        border-radius: 8px;
+        padding: 8px 12px;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .shortcut-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .key {
+        display: inline-block;
+        background-color: rgba(138, 43, 226, 0.2);
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    /* Time markers styling */
+    .time-marker {
+        position: absolute;
+        width: 1px;
+        height: 6px;
+        background-color: rgba(227, 41, 255, 0.3);
+        top: 0;
+    }
+    
+    /* Spectrum analyzer */
+    #spectrum-analyzer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 20;
+    }
+    
+    /* Waveform base */
+    #waveform {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+    }
+    
+    /* Audio info text */
+    .audio-info {
+        background-color: rgba(20, 20, 20, 0.5);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.6);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .audio-info i {
+        color: #e329ff;
+    }
+    
+    /* Audio position indicator - supprimé car il empiète sur le texte */
+    .position-indicator {
+        display: none; /* Masquer complètement l'indicateur */
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .controls-container {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .controls-left, .controls-right {
+            width: auto;
+        }
+        
+        .track-info {
+            order: -1;
+            margin-bottom: 15px;
+        }
+        
+        #track-name {
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Volume controls */
+    .volume-control {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+        margin-right: 10px;
+    }
+    
+    .volume-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #9333ea, #e329ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(227, 41, 255, 0.5);
+        font-size: 1.2rem;
+        z-index: 51;
+    }
+    
+    .volume-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(227, 41, 255, 0.8);
+    }
+    
+    .volume-button:active {
+        transform: scale(0.95);
+    }
+    
+    /* Ajouter une animation pour rendre le bouton plus visible */
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(227, 41, 255, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(227, 41, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(227, 41, 255, 0); }
+    }
+    
+    /* Appliquer l'animation au chargement pour attirer l'attention */
+    .volume-button-animate {
+        animation: pulse 2s infinite;
+    }
+    
+    /* Volume slider container */
+    .volume-slider-container {
+        position: absolute;
+        top: 50px;  /* Positionné en-dessous */
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(25, 25, 25, 0.95);
+        border: 1px solid #444;
+        border-radius: 12px;
+        padding: 15px 8px;
+        z-index: 100;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s ease;
+        height: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .volume-slider-container::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%) rotate(180deg);
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid rgba(25, 25, 25, 0.95);
+    }
+    
+    .volume-slider {
+        -webkit-appearance: none;
+        width: 100px;
+        height: 6px;
+        background: #444;
+        border-radius: 3px;
+        outline: none;
+        transform: rotate(270deg);
+        transform-origin: center center;
+        margin: 30px 0;
+    }
+    
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e329ff, #9333ea);
+        cursor: pointer;
+        border: 2px solid #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    
+    .volume-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e329ff, #9333ea);
+        cursor: pointer;
+        border: 2px solid #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    
+    .hidden {
+        display: none;
+    }
+    
+    /* Volume level indicator */
+    .volume-level-indicator {
+        position: relative;
+        margin-top: 10px;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 3px 8px;
+        border-radius: 10px;
+        text-align: center;
+    }
+    
+    /* Nouveaux styles pour la section de référence */
+    .reference-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .toggle-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    
+    .toggle-input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #333;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    .toggle-input:checked + .toggle-slider {
+        background-color: #e329ff;
+    }
+    
+    .toggle-input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+    }
+    
+    .reference-section {
+        background-color: rgba(15, 15, 15, 0.7);
+        border-radius: 12px;
+        border: 1px solid #333;
+        padding: 20px;
+        margin: 20px 0;
+        transition: all 0.3s ease;
+    }
+    
+    .reference-section.hidden {
+        display: none;
+    }
+    
+    .reference-upload {
+        border: 2px dashed #444;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .reference-upload:hover {
+        border-color: #e329ff;
+        background-color: rgba(138, 43, 226, 0.1);
+    }
+    
+    .reference-list {
+        margin-top: 15px;
+    }
+    
+    .reference-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: rgba(30, 30, 30, 0.5);
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .reference-item:hover {
+        background-color: rgba(138, 43, 226, 0.1);
+    }
+    
+    .reference-item.active {
+        border: 1px solid #e329ff;
+        background-color: rgba(138, 43, 226, 0.2);
+    }
+    
+    .reference-item-info {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
+    
+    .reference-item-name {
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+    
+    .reference-item-date {
+        font-size: 0.8rem;
+        color: #999;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="py-20 relative">
+    <div class="dot-pattern opacity-20"></div>
+    <div class="purple-glow absolute top-1/4 right-1/4 opacity-20"></div>
+    <div class="purple-glow absolute bottom-1/4 left-1/4 opacity-20"></div>
+    
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center mb-12">
+            <div class="badge mx-auto mb-4">AUDIO MASTERING</div>
+            <h1 class="text-4xl font-bold mb-4">DROP YOUR TRACK</h1>
+            <p class="text-gray-400 text-lg">
+                Upload your audio file and let us transform it into a professional-sounding masterpiece
+            </p>
+        </div>
+        
+        <!-- Upload area -->
+        <div id="upload-area" class="upload-container">
+            <div class="mb-6">
+                <input type="file" class="filepond" name="file" accept="audio/mp3,audio/mpeg,audio/wav" />
+                <p class="text-sm text-gray-500 text-center mt-2">Supports MP3, MPEG, and WAV files up to 50MB</p>
+            </div>
+            
+            <div id="preset-selection" class="hidden mt-12">
+                <h2 class="text-2xl font-bold mb-2 text-center">CHOISISSEZ VOTRE PRESET</h2>
+                <p class="text-gray-400 text-center mb-6">Sélectionnez l'une de nos technologies de mastering pour transformer votre morceau</p>
+                
+                <!-- Presets Masterify -->
+                <div class="preset-grid" id="masterify-presets">
+                    <div class="preset-card" data-preset="masterify_v1">
+                        <div class="preset-icon"><i class="fas fa-wave-square"></i></div>
+                        <h3 class="font-bold text-xl mb-2 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">MASTERIFY V.1</h3>
+                        <p class="text-gray-400 text-sm">Mastering équilibré adapté à la plupart des genres musicaux avec un son clair et défini</p>
+                    </div>
+                    
+                    <div class="preset-card" data-preset="masterify_ia">
+                        <div class="preset-icon"><i class="fas fa-brain"></i></div>
+                        <h3 class="font-bold text-xl mb-2 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">MASTERIFY I.A</h3>
+                        <p class="text-gray-400 text-sm">Notre intelligence artificielle analyse et optimise votre morceau pour un son professionnel dynamique</p>
+                    </div>
+                </div>
+                
+                <!-- Option pour utiliser une track de référence -->
+                <div class="reference-toggle">
+                    <label class="toggle-wrapper">
+                        <input type="checkbox" class="toggle-input" id="reference-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span>Utiliser une track de référence personnalisée</span>
+                </div>
+                
+                <!-- Section de référence (masquée par défaut) -->
+                <div class="reference-section hidden" id="reference-section">
+                    <h3 class="text-lg font-bold mb-3">Track de référence</h3>
+                    <p class="text-gray-400 text-sm mb-4">Uploadez ou sélectionnez une track de référence pour guider le mastering de votre morceau</p>
+                    
+                    <!-- Upload de référence -->
+                    <div id="reference-upload" class="reference-upload">
+                        <i class="fas fa-music text-2xl text-gray-400 mb-2"></i>
+                        <p>Glissez-déposez une track de référence ou cliquez pour parcourir</p>
+                        <input type="file" id="reference-file-input" accept="audio/mp3,audio/mpeg,audio/wav" style="display: none;">
+                    </div>
+                    
+                    <!-- Liste des références disponibles -->
+                    <div class="reference-list" id="reference-list">
+                        <h4 class="text-sm font-bold mb-2">Vos références</h4>
+                        <div id="reference-items">
+                            <!-- Sera rempli dynamiquement par JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-16 text-center" id="processing-button-container">
+                    <button id="process-button" class="cta-button text-lg py-4 px-8" disabled>
+                        MASTERISER VOTRE MORCEAU
+                    </button>
+                    <p class="text-gray-500 text-sm mt-4">
+                        Ce traitement utilisera 1 crédit de votre compte
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Processing area -->
+            <div id="processing-area" class="hidden mt-8 text-center">
+                <div class="inline-block">
+                    <svg class="animate-spin h-12 w-12 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mt-4 mb-2">Processing Your Track</h3>
+                <p class="text-gray-400">This may take a few moments depending on the file size</p>
+            </div>
+            
+            <!-- Result area -->
+            <div id="result-area" class="hidden mt-12">
+                <h2 class="text-2xl font-bold mb-6 text-center">YOUR MASTERED TRACK</h2>
+                
+                <div class="player-container">
+                    <!-- Waveform container avec timeline interactive -->
+                    <div class="waveform-container w-full">
+                        <canvas id="waveform" class="absolute top-0 left-0 w-full h-full z-10"></canvas>
+                        <canvas id="spectrum-analyzer" class="absolute top-0 left-0 w-full h-full z-20"></canvas>
+                    </div>
+                    
+                    <!-- Timeline controls -->
+                    <div class="timeline-container relative w-full cursor-pointer">
+                        <div id="timeline-progress" class="absolute top-0 left-0 h-full" style="width: 0%"></div>
+                        <div id="timeline-cursor" class="absolute top-0 transform -translate-x-1/2" style="left: 0%"></div>
+                        <div id="timeline-markers" class="absolute top-0 w-full h-full"></div>
+                    </div>
+                    
+                    <!-- Time display -->
+                    <div class="time-display">
+                        <span id="time-current">0:00</span>
+                        <span id="time-total">0:00</span>
+                    </div>
+                    
+                    <!-- Controls area -->
+                    <div class="controls-container">
+                        <div class="controls-left">
+                            <button id="play-button" data-playing="false">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="track-info">
+                            <h3 id="track-name" class="text-lg"></h3>
+                            <p id="track-details" class="text-sm"></p>
+                        </div>
+                        
+                        <div class="controls-right">
+                            <!-- Contrôle du volume -->
+                            <div class="volume-control">
+                                <button id="volume-button" class="volume-button">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <div id="volume-slider-container" class="volume-slider-container hidden">
+                                    <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="80" orient="vertical">
+                                    <div class="volume-level-indicator">
+                                        <span id="volume-percentage">80%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Keyboard shortcuts info -->
+                    <div class="keyboard-shortcuts">
+                        <div class="shortcut-item">
+                            <span class="key">Space</span>
+                            <span>Play/Pause</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="key">←</span>
+                            <span>-5 sec</span>
+                        </div>
+                        <div class="shortcut-item">
+                            <span class="key">→</span>
+                            <span>+5 sec</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Download button -->
+                    <div class="download-container">
+                        <a id="download-button" href="#" class="cta-button">
+                            <i class="fas fa-download"></i> DOWNLOAD MASTERED TRACK
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <button id="reset-button" class="secondary-button">
+                        PROCESS ANOTHER TRACK
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Login prompt (shown when user tries to process without being logged in) -->
+            <div id="login-prompt" class="hidden login-prompt">
+                <h3 class="text-xl font-bold mb-4">Create an account to master your track</h3>
+                <p class="text-gray-400 mb-6">Sign up now to receive one free mastering credit</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="prompt-signup-button" class="cta-button text-sm" onclick="window.location.href='/auth?tab=signup'">
+                        SIGN UP
+                    </button>
+                    <button id="prompt-login-button" class="secondary-button text-sm" onclick="window.location.href='/auth?tab=login'">
+                        LOG IN
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Error message -->
+            <div id="error-message" class="hidden mt-8 bg-red-900/30 border border-red-500 text-red-200 p-4 rounded-lg text-center">
+                An error occurred. Please try again.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section d'information/copywriting catchy -->
+<section class="relative py-20 overflow-hidden bg-black">
+    <div class="absolute inset-0 z-0">
+        <div class="dot-pattern w-full h-full"></div>
+        <div class="purple-glow absolute top-1/2 left-1/3 w-[600px] h-[600px] opacity-20" id="glow1"></div>
+        <div class="purple-glow absolute top-1/3 right-1/4 w-[600px] h-[600px] opacity-20" id="glow2"></div>
+    </div>
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="badge mx-auto mb-4">WHY MASTERIFY?</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-6 bg-gradient-to-tr from-purple-400 to-pink-500 bg-clip-text text-transparent">Paste your file. Get instant magic.</h2>
+            <p class="text-xl text-gray-300 mb-8">No more endless tweaking or expensive studios. With Masterify, you simply paste your audio file and let our AI-powered engine do the rest. In seconds, your track is transformed into a professional, release-ready masterpiece—ready to blow up on every platform.</p>
+            <ul class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left mb-10">
+                <li class="flex items-start">
+                    <span class="text-purple-400 text-2xl mr-3"><i class="fas fa-bolt"></i></span>
+                    <span><strong>Lightning Fast</strong><br>Get your master in less than a minute, 24/7.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-pink-400 text-2xl mr-3"><i class="fas fa-magic"></i></span>
+                    <span><strong>Studio Quality</strong><br>AI mastering trained on thousands of hit records.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-400 text-2xl mr-3"><i class="fas fa-headphones-alt"></i></span>
+                    <span><strong>100% Yours</strong><br>No hidden fees, no royalties. Your sound, your rules.</span>
+                </li>
+            </ul>
+            <div class="mt-8">
+                <a href="/pricing" class="cta-button text-lg px-8 py-4">See Pricing &amp; Get Started</a>
+            </div>
+            <p class="mt-8 text-gray-500 text-sm">Join thousands of artists who trust Masterify to make their music shine. Ready to stand out?</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+
+<script>
+    // Check if user is logged in
+    let isLoggedIn = false;
+    let userCredits = 0;
+    let uploadedFileName = null;
+    let originalFileName = null;
+    let suggestedPreset = null;
+    let selectedPreset = null;
+    let processedFileId = null;
+    
+    // Variables pour les références
+    let useReference = false;
+    let selectedReference = null;
+    let userReferences = [];
+    
+    // Audio player variables
+    let audioContext = null;
+    let audioPlayer = null;
+    let audioSource = null;
+    let analyser = null;
+    let audioBuffer = null;
+    let isPlaying = false;
+    let animationFrame = null;
+    let volumeSliderVisible = false;
+    
+    // Initialize on document load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication status
+        checkAuth();
+        
+        // Initialize FilePond
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        
+        const pond = FilePond.create(document.querySelector('.filepond'), {
+            labelIdle: `Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>`,
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav'],
+            allowMultiple: false,
+            maxFiles: 1,
+            maxFileSize: '50MB',
+            name: 'file',
+            server: {
+                process: {
+                    url: '/api/upload',
+                    method: 'POST',
+                    withCredentials: true,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    ondata: (formData) => {
+                        if (formData.has('filepond')) {
+                            const file = formData.get('filepond');
+                            formData.delete('filepond');
+                            formData.append('file', file);
+                        }
+                        return formData;
+                    },
+                    onload: (response) => {
+                        const result = JSON.parse(response);
+                        
+                        if (result.success) {
+                            uploadedFileName = result.filename;
+                            originalFileName = result.original_filename;
+                            suggestedPreset = result.suggested_preset;
+                            
+                            // Show preset selection
+                            showPresetSelection(suggestedPreset);
+                        } else {
+                            showError(result.message);
+                        }
+                        return response;
+                    },
+                    onerror: (response) => {
+                        try {
+                            const result = JSON.parse(response);
+                            
+                            if (result.message === 'Not enough credits. Please purchase more credits to continue.') {
+                                showError('You do not have enough credits to process this track. Please purchase more credits.');
+                            } else if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred: ' + result.message);
+                            }
+                        } catch (e) {
+                            if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred. Please try again.');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Set up event listeners for preset selection
+        document.querySelectorAll('.preset-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Supprimer la classe active de tous les presets du même groupe
+                const parentId = this.parentElement.id;
+                document.querySelectorAll(`#${parentId} .preset-card`).forEach(c => c.classList.remove('active'));
+                
+                // Ajouter la classe active au preset sélectionné
+                this.classList.add('active');
+                
+                // Stocker le preset sélectionné
+                selectedPreset = this.dataset.preset;
+                
+                // Activer le bouton de traitement
+                document.getElementById('process-button').disabled = false;
+            });
+        });
+        
+        // Gestionnaire pour le toggle de référence
+        const referenceToggle = document.getElementById('reference-toggle');
+        if (referenceToggle) {
+            referenceToggle.addEventListener('change', function() {
+                useReference = this.checked;
+                const referenceSection = document.getElementById('reference-section');
+                
+                if (useReference) {
+                    referenceSection.classList.remove('hidden');
+                    // Charger les références de l'utilisateur
+                    loadUserReferences();
+                } else {
+                    referenceSection.classList.add('hidden');
+                    // Désélectionner la référence
+                    selectedReference = null;
+                    // Mettre à jour les éléments de référence
+                    updateReferenceUI();
+                }
+            });
+        }
+        
+        // Gestionnaire pour l'upload de référence
+        const referenceUpload = document.getElementById('reference-upload');
+        const referenceFileInput = document.getElementById('reference-file-input');
+        
+        if (referenceUpload && referenceFileInput) {
+            referenceUpload.addEventListener('click', function() {
+                referenceFileInput.click();
+            });
+            
+            referenceUpload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#e329ff';
+                this.style.backgroundColor = 'rgba(138, 43, 226, 0.1)';
+            });
+            
+            referenceUpload.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#444';
+                this.style.backgroundColor = 'transparent';
+            });
+            
+            referenceUpload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#444';
+                this.style.backgroundColor = 'transparent';
+                
+                if (e.dataTransfer.files.length) {
+                    referenceFileInput.files = e.dataTransfer.files;
+                    uploadReferenceFile(e.dataTransfer.files[0]);
+                }
+            });
+            
+            referenceFileInput.addEventListener('change', function() {
+                if (this.files.length) {
+                    uploadReferenceFile(this.files[0]);
+                }
+            });
+        }
+        
+        // Process button click handler
+        document.getElementById('process-button').addEventListener('click', function() {
+            if (!isLoggedIn) {
+                showLoginPrompt();
+                return;
+            }
+            
+            if (userCredits <= 0) {
+                showError('You do not have enough credits to process this track. Please purchase more credits.');
+                return;
+            }
+            
+            // Traiter avec le preset sélectionné
+            processTrack();
+        });
+        
+        // Login/Signup buttons in prompt
+        document.getElementById('prompt-login-button').addEventListener('click', function() {
+            window.location.href = '/login';
+        });
+        
+        document.getElementById('prompt-signup-button').addEventListener('click', function() {
+            window.location.href = '/register';
+        });
+        
+        // Reset button handler
+        document.getElementById('reset-button').addEventListener('click', function() {
+            resetUploadArea();
+        });
+        
+        // Initialize audio player controls
+        initAudioPlayerControls();
+
+        // Initialiser le contrôle de volume s'il existe déjà
+        const volumeButton = document.getElementById('volume-button');
+        if (volumeButton) {
+            // Animation pour attirer l'attention sur le bouton de volume
+            volumeButton.classList.add('volume-button-animate');
+            setTimeout(() => {
+                volumeButton.classList.remove('volume-button-animate');
+            }, 6000);
+        }
+    });
+    
+    // Upload d'une track de référence
+    function uploadReferenceFile(file) {
+        if (!file) return;
+        
+        // Vérification du type de fichier
+        const allowedTypes = ['audio/mp3', 'audio/mpeg', 'audio/wav'];
+        if (!allowedTypes.includes(file.type)) {
+            showError('File type not allowed. Please upload MP3 or WAV files only.');
+            return;
+        }
+        
+        // Création d'un FormData pour l'upload
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('is_reference', 'true');
+        
+        // Afficher un indicateur de chargement
+        const uploadArea = document.getElementById('reference-upload');
+        uploadArea.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i><p>Uploading reference track...</p></div>';
+        
+        // Envoyer la requête
+        fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Recharger les références de l'utilisateur
+                loadUserReferences();
+                
+                // Restaurer l'interface d'upload
+                uploadArea.innerHTML = '<i class="fas fa-music text-2xl text-gray-400 mb-2"></i><p>Glissez-déposez une track de référence ou cliquez pour parcourir</p><input type="file" id="reference-file-input" accept="audio/mp3,audio/mpeg,audio/wav" style="display: none;">';
+                
+                // Rebrancher l'event listener sur le nouvel input
+                const newReferenceFileInput = document.getElementById('reference-file-input');
+                if (newReferenceFileInput) {
+                    newReferenceFileInput.addEventListener('change', function() {
+                        if (this.files.length) {
+                            uploadReferenceFile(this.files[0]);
+                        }
+                    });
+                }
+                
+                // Réattacher les événements au nouveau contenu
+                attachReferenceUploadEvents();
+            } else {
+                showError(data.message || 'Failed to upload reference track');
+                
+                // Restaurer l'interface d'upload
+                uploadArea.innerHTML = '<i class="fas fa-music text-2xl text-gray-400 mb-2"></i><p>Glissez-déposez une track de référence ou cliquez pour parcourir</p><input type="file" id="reference-file-input" accept="audio/mp3,audio/mpeg,audio/wav" style="display: none;">';
+                
+                // Rebrancher l'event listener
+                attachReferenceUploadEvents();
+            }
+        })
+        .catch(error => {
+            console.error('Error uploading reference track:', error);
+            showError('An error occurred while uploading the reference track');
+            
+            // Restaurer l'interface d'upload
+            uploadArea.innerHTML = '<i class="fas fa-music text-2xl text-gray-400 mb-2"></i><p>Glissez-déposez une track de référence ou cliquez pour parcourir</p><input type="file" id="reference-file-input" accept="audio/mp3,audio/mpeg,audio/wav" style="display: none;">';
+            
+            // Rebrancher l'event listener
+            attachReferenceUploadEvents();
+        });
+    }
+    
+    // Attacher les événements d'upload de référence après le remplacement du contenu
+    function attachReferenceUploadEvents() {
+        const referenceUpload = document.getElementById('reference-upload');
+        const referenceFileInput = document.getElementById('reference-file-input');
+        
+        if (referenceUpload && referenceFileInput) {
+            referenceUpload.addEventListener('click', function() {
+                referenceFileInput.click();
+            });
+            
+            referenceUpload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#e329ff';
+                this.style.backgroundColor = 'rgba(138, 43, 226, 0.1)';
+            });
+            
+            referenceUpload.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#444';
+                this.style.backgroundColor = 'transparent';
+            });
+            
+            referenceUpload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#444';
+                this.style.backgroundColor = 'transparent';
+                
+                if (e.dataTransfer.files.length) {
+                    referenceFileInput.files = e.dataTransfer.files;
+                    uploadReferenceFile(e.dataTransfer.files[0]);
+                }
+            });
+        }
+    }
+    
+    // Charger les références de l'utilisateur
+    function loadUserReferences() {
+        fetch('/api/user_references')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    userReferences = data.references || [];
+                    updateReferenceUI();
+                } else {
+                    console.error('Failed to load user references:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading user references:', error);
+            });
+    }
+    
+    // Mettre à jour l'interface des références
+    function updateReferenceUI() {
+        const referenceItems = document.getElementById('reference-items');
+        if (!referenceItems) return;
+        
+        if (userReferences.length === 0) {
+            referenceItems.innerHTML = '<p class="text-gray-400 text-sm">Aucune référence disponible. Uploadez une track pour commencer.</p>';
+            return;
+        }
+        
+        referenceItems.innerHTML = '';
+        
+        userReferences.forEach(reference => {
+            const refItem = document.createElement('div');
+            refItem.className = 'reference-item';
+            refItem.dataset.filename = reference.filename;
+            
+            if (selectedReference === reference.filename) {
+                refItem.classList.add('active');
+            }
+            
+            // Extraire le nom original du fichier (sans la partie user_id_uuid)
+            const originalName = reference.filename.split('_').slice(2).join('_');
+            
+            refItem.innerHTML = `
+                <div class="reference-item-info">
+                    <div class="reference-item-name">${originalName || reference.filename}</div>
+                    <div class="reference-item-date">${reference.date_added}</div>
+                </div>
+                <i class="fas fa-check text-purple-500 ${selectedReference === reference.filename ? '' : 'opacity-0'}"></i>
+            `;
+            
+            refItem.addEventListener('click', function() {
+                // Mettre à jour la sélection
+                selectedReference = this.dataset.filename;
+                
+                // Mettre à jour l'UI
+                document.querySelectorAll('.reference-item').forEach(item => {
+                    item.classList.remove('active');
+                    item.querySelector('i').classList.add('opacity-0');
+                });
+                
+                this.classList.add('active');
+                this.querySelector('i').classList.remove('opacity-0');
+            });
+            
+            referenceItems.appendChild(refItem);
+        });
+    }
+
+    // Process the track
+    async function processTrack() {
+        // Show processing UI
+        document.getElementById('preset-selection').classList.add('hidden');
+        document.getElementById('processing-area').classList.remove('hidden');
+        
+        try {
+            const response = await fetch('/api/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    filename: uploadedFileName,
+                    original_filename: originalFileName,
+                    preset: selectedPreset,
+                    use_reference: useReference,
+                    reference_file: selectedReference
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                processedFileId = data.file_id;
+                userCredits = data.credits_remaining;
+                
+                // Update UI to show success
+                showResultArea(data);
+            } else {
+                showError(data.message);
+                // Hide processing UI
+                document.getElementById('processing-area').classList.add('hidden');
+                document.getElementById('preset-selection').classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Processing error:', error);
+            showError('An error occurred while processing your track. Please try again.');
+            // Hide processing UI
+            document.getElementById('processing-area').classList.add('hidden');
+            document.getElementById('preset-selection').classList.remove('hidden');
+        }
+    }
+    
+    // Show preset selection
+    function showPresetSelection(suggested) {
+        document.getElementById('preset-selection').classList.remove('hidden');
+        
+        // Select the suggested preset
+        if (suggested) {
+            const suggestedCard = document.querySelector(`.preset-card[data-preset="${suggested}"]`);
+            if (suggestedCard) {
+                suggestedCard.classList.add('active');
+                selectedPreset = suggested;
+                document.getElementById('process-button').disabled = false;
+            }
+        }
+        
+        // Scroll to preset selection
+        document.getElementById('preset-selection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    // Show result area with enhanced functionality
+    function showResultArea(data) {
+        document.getElementById('processing-area').classList.add('hidden');
+        document.getElementById('result-area').classList.remove('hidden');
+        
+        // Set track details
+        const trackNameElement = document.getElementById('track-name');
+        trackNameElement.textContent = originalFileName;
+        
+        // Vérifier si le texte est trop long et réduire la taille de police si nécessaire
+        if (originalFileName.length > 35) {
+            trackNameElement.style.fontSize = '1.1rem';
+        } else {
+            trackNameElement.style.fontSize = '1.4rem';
+        }
+        
+        document.getElementById('track-details').textContent = `Processed with ${selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)} preset`;
+        
+        // Set download link
+        document.getElementById('download-button').href = `/api/download/${data.file_id}`;
+        
+        // Attirer l'attention sur le bouton de volume
+        // On réinitialise le contrôle de volume pour s'assurer qu'il fonctionne
+        const volumeButtonUpdated = initVolumeControl();
+        if (volumeButtonUpdated) {
+            // S'assurer que le bouton est visible
+            volumeButtonUpdated.style.display = 'flex';
+            
+            // Animer le bouton pour attirer l'attention
+            volumeButtonUpdated.classList.add('volume-button-animate');
+            setTimeout(() => {
+                volumeButtonUpdated.classList.remove('volume-button-animate');
+            }, 6000);
+        }
+        
+        // Fetch waveform data and render it
+        fetch(`/api/waveform/${data.processed_filename}`)
+            .then(response => response.json())
+            .then(waveformData => {
+                if (waveformData.success) {
+                    renderWaveform(waveformData.waveform);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching waveform:', error);
+            });
+            
+        // Reset audio player state
+        if (audioPlayer) {
+            audioPlayer.pause();
+            audioPlayer = null;
+        }
+        if (audioContext) {
+            audioContext.close();
+            audioContext = null;
+        }
+        isPlaying = false;
+        
+        // Scroll to result area
+        document.getElementById('result-area').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    // Reset upload area
+    function resetUploadArea() {
+        document.getElementById('result-area').classList.add('hidden');
+        document.getElementById('preset-selection').classList.add('hidden');
+        document.getElementById('login-prompt').classList.add('hidden');
+        document.getElementById('error-message').classList.add('hidden');
+        
+        // Reset reference selection
+        useReference = false;
+        selectedReference = null;
+        const referenceToggle = document.getElementById('reference-toggle');
+        if (referenceToggle) {
+            referenceToggle.checked = false;
+        }
+        const referenceSection = document.getElementById('reference-section');
+        if (referenceSection) {
+            referenceSection.classList.add('hidden');
+        }
+        
+        // Reset FilePond
+        FilePond.destroy(document.querySelector('.filepond'));
+        document.querySelector('.filepond').value = '';
+        
+        // Reinitialize FilePond
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.create(document.querySelector('.filepond'), {
+            labelIdle: `Drag & Drop your audio file or <span class="filepond--label-action">Browse</span>`,
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav'],
+            allowMultiple: false,
+            maxFiles: 1,
+            maxFileSize: '50MB',
+            name: 'file',
+            server: {
+                process: {
+                    url: '/api/upload',
+                    method: 'POST',
+                    withCredentials: true,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    ondata: (formData) => {
+                        if (formData.has('filepond')) {
+                            const file = formData.get('filepond');
+                            formData.delete('filepond');
+                            formData.append('file', file);
+                        }
+                        return formData;
+                    },
+                    onload: (response) => {
+                        const result = JSON.parse(response);
+                        
+                        if (result.success) {
+                            uploadedFileName = result.filename;
+                            originalFileName = result.original_filename;
+                            suggestedPreset = result.suggested_preset;
+                            
+                            // Show preset selection
+                            showPresetSelection(suggestedPreset);
+                        } else {
+                            showError(result.message);
+                        }
+                        return response;
+                    },
+                    onerror: (response) => {
+                        try {
+                            const result = JSON.parse(response);
+                            
+                            if (result.message === 'Not enough credits. Please purchase more credits to continue.') {
+                                showError('You do not have enough credits to process this track. Please purchase more credits.');
+                            } else if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred: ' + result.message);
+                            }
+                        } catch (e) {
+                            if (response.status === 401) {
+                                // Show login prompt if not authenticated
+                                showLoginPrompt();
+                            } else {
+                                showError('An error occurred. Please try again.');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Reset variables
+        uploadedFileName = null;
+        originalFileName = null;
+        suggestedPreset = null;
+        selectedPreset = null;
+        processedFileId = null;
+        
+        if (window.audioPlayer) {
+            window.audioPlayer.pause();
+            window.audioPlayer = null;
+        }
+        
+        // Scroll to top
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Check authentication status
+    async function checkAuth() {
+        try {
+            const response = await fetch('/auth/user');
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    isLoggedIn = true;
+                    userCredits = data.user.credits;
+                }
+            }
+        } catch (error) {
+            console.error('Error checking authentication:', error);
+        }
+    }
+    
+    // Show login prompt
+    function showLoginPrompt() {
+        document.getElementById('login-prompt').classList.remove('hidden');
+        document.getElementById('preset-selection').classList.add('hidden');
+        
+        // Scroll to login prompt
+        document.getElementById('login-prompt').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+    
+    // Show error message
+    function showError(message) {
+        const errorElement = document.getElementById('error-message');
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+        
+        // Hide error after 5 seconds
+        setTimeout(() => {
+            errorElement.classList.add('hidden');
+        }, 5000);
+    }
+    
+    // Ces fonctions sont nécessaires pour le fonctionnement de l'application
+    // mais ne sont pas directement liées à l'implémentation de l'upload de référence
+    function initAudioPlayerControls() {
+        // Fonction à implémenter ou déjà implémentée ailleurs
+    }
+    
+    function initVolumeControl() {
+        // Fonction à implémenter ou déjà implémentée ailleurs
+        return document.getElementById('volume-button');
+    }
+    
+    function renderWaveform(waveformData) {
+        // Fonction à implémenter ou déjà implémentée ailleurs
+    }
+</script>
+<style>
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(138, 43, 226, 0.1);
+        border: 1px solid rgba(227, 41, 255, 0.3);
+        color: #e329ff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
+{% block footer %}{% endblock %}

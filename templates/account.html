@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Settings - Masterify{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background: #0a0a0a;
+        color: #fff;
+        font-family: 'Inter', 'Montserrat', sans-serif;
+    }
+    footer, .footer, .footer * {
+        font-family: 'Inter', 'Montserrat', sans-serif !important;
+    }
+    .account-container {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto 4rem auto;
+        background: rgba(20,20,30,0.92);
+        border-radius: 2rem;
+        box-shadow: 0 8px 32px 0 #a855f755;
+        padding: 2.5rem 3rem 2rem 3rem;
+        margin-top: 3rem;
+        display: flex;
+        flex-direction: row;
+        gap: 3rem;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    @media (max-width: 900px) {
+        .account-container {
+            flex-direction: column;
+            padding: 2rem 1rem;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+    }
+    .account-settings-panel {
+        flex: 1 1 0;
+        min-width: 320px;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+    .subscription-section {
+        flex: 2 1 0;
+        min-width: 320px;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .account-title {
+        font-size: 2rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, #fff, #a855f7 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+    }
+    .account-desc {
+        color: #bdb4e6;
+        text-align: center;
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+    .credits-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        border-radius: 9999px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        margin: 0 auto 1.5rem auto;
+        box-shadow: 0 2px 12px #e329ff33;
+        width: fit-content;
+    }
+    .form-label {
+        color: #bdb4e6;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+        font-size: 0.98rem;
+    }
+    .form-input {
+        width: 100%;
+        background-color: rgba(30, 30, 30, 0.7);
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        color: white;
+        margin-bottom: 1.1rem;
+        font-size: 1.05rem;
+    }
+    .form-input:focus {
+        border-color: #a855f7;
+        outline: none;
+    }
+    .save-btn {
+        background: linear-gradient(90deg, #a855f7, #e329ff);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 999px;
+        padding: 0.8rem 2.2rem;
+        margin: 0 auto 0.5rem auto;
+        box-shadow: 0 2px 12px #a855f733;
+        transition: background 0.3s, transform 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        display: block;
+    }
+    .save-btn:hover {
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        transform: translateY(-2px) scale(1.03);
+    }
+    .divider {
+        border: none;
+        border-top: 1px solid #2d2d3a;
+        margin: 1.5rem 0 0.5rem 0;
+    }
+    .subscription-section {
+        background: rgba(30,30,40,0.7);
+        border-radius: 1.2rem;
+        padding: 1.2rem 1rem 1.5rem 1rem;
+        box-shadow: 0 2px 12px #a855f733;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+    }
+    .plan-badge {
+        display: inline-block;
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        border-radius: 999px;
+        padding: 0.4rem 1.2rem;
+        margin-bottom: 0.7rem;
+        letter-spacing: 1px;
+    }
+    .plan-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .plan-card {
+        background: rgba(40, 20, 60, 0.7);
+        border-radius: 1rem;
+        padding: 1.1rem 1rem 1.1rem 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 12px #a855f733;
+        border: 1.5px solid #a855f7;
+    }
+    .plan-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+    .plan-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .plan-desc {
+        font-size: 0.97rem;
+        color: #bdb4e6;
+    }
+    .plan-btn {
+        background: linear-gradient(90deg, #a855f7, #e329ff);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        border: none;
+        border-radius: 999px;
+        padding: 0.6rem 1.7rem;
+        box-shadow: 0 2px 12px #a855f733;
+        transition: background 0.3s, transform 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+    .plan-btn.starter { background: linear-gradient(90deg, #6366f1, #a855f7); }
+    .plan-btn.pro { background: linear-gradient(90deg, #a855f7, #e329ff); }
+    .plan-btn.studio { background: linear-gradient(90deg, #e329ff, #f59e42); }
+    .plan-btn:hover { filter: brightness(1.1); transform: translateY(-2px) scale(1.04); }
+    .current-plan {
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px #a855f7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+    <div class="account-settings-panel">
+        <h1 class="account-title">Account Settings</h1>
+        <div class="account-desc">Manage your profile, update your email or password, and see your available credits.</div>
+        <div class="credits-badge">
+            <i class="fas fa-coins mr-2"></i>
+            {{ user.credits }} credit{% if user.credits != 1 %}s{% endif %} remaining
+        </div>
+        <form id="account-form">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-input" type="text" id="username" name="username" value="{{ user.username }}" required>
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" name="email" value="{{ user.email }}" required>
+            <label class="form-label" for="password">New Password</label>
+            <input class="form-input" type="password" id="password" name="password" placeholder="Leave blank to keep your current password">
+            <button type="submit" class="save-btn"><i class="fas fa-save mr-2"></i>Save Changes</button>
+            <div id="account-message" class="mt-4 text-center text-green-400 font-bold hidden"></div>
+        </form>
+        <hr class="divider">
+    </div>
+    <div class="subscription-section">
+        <div class="plan-badge">Current Plan: <span id="plan-name">{{ user.plan or 'Starter' }}</span></div>
+        <div class="text-gray-300 mb-2">Renewal date: <span id="renewal-date">{{ user.plan_renewal or 'N/A' }}</span></div>
+        <div class="plan-options">
+            <div class="plan-card {% if user.plan == 'starter' %}current-plan{% endif %}">
+                <div class="plan-info">
+                    <span class="plan-title">Starter</span>
+                    <span class="plan-desc">Perfect to try out Masterify. 5 credits/month.</span>
+                </div>
+                <button class="plan-btn starter" onclick="window.location.href='/stripe/checkout?plan=starter'">Choose</button>
+            </div>
+            <div class="plan-card {% if user.plan == 'pro' %}current-plan{% endif %}">
+                <div class="plan-info">
+                    <span class="plan-title">Pro</span>
+                    <span class="plan-desc">For regular users. 20 credits/month. Priority support.</span>
+                </div>
+                <button class="plan-btn pro" onclick="window.location.href='/stripe/checkout?plan=pro'">Choose</button>
+            </div>
+            <div class="plan-card {% if user.plan == 'studio' %}current-plan{% endif %}">
+                <div class="plan-info">
+                    <span class="plan-title">Studio</span>
+                    <span class="plan-desc">Unlimited credits. For professionals & studios.</span>
+                </div>
+                <button class="plan-btn studio" onclick="window.location.href='/stripe/checkout?plan=studio'">Choose</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('account-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const message = document.getElementById('account-message');
+    message.classList.add('hidden');
+    try {
+        const res = await fetch('/auth/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+            message.textContent = 'Your account has been updated successfully!';
+            message.classList.remove('hidden');
+            message.classList.remove('text-red-400');
+        } else {
+            message.textContent = data.message || 'Error updating account.';
+            message.classList.remove('hidden');
+            message.classList.add('text-red-400');
+        }
+    } catch (err) {
+        message.textContent = 'Error updating account.';
+        message.classList.remove('hidden');
+        message.classList.add('text-red-400');
+    }
+});
+</script>
+{% endblock %} 

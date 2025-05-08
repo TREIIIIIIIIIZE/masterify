@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block title %}Pricing - Masterify{% endblock %}
+
+{% block head %}
+<style>
+    .pricing-hero {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        position: relative;
+        z-index: 1;
+    }
+    .pricing-title {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, #fff, #a855f7 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 1rem;
+        letter-spacing: -1px;
+    }
+    .pricing-subtitle {
+        color: #bdb4e6;
+        font-size: 1.25rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto 3rem auto;
+    }
+    .plan-card {
+        background: rgba(20,20,30,0.85);
+        border: 1px solid #333347;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 32px 0 #a855f733;
+        padding: 2.5rem 2rem 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: box-shadow 0.3s, border 0.3s, transform 0.3s;
+        position: relative;
+    }
+    .plan-card.popular {
+        border: 2px solid #e329ff;
+        box-shadow: 0 12px 40px 0 #e329ff33;
+        transform: scale(1.04);
+    }
+    .plan-badge {
+        position: absolute;
+        top: -1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.3rem 1.2rem;
+        border-radius: 999px;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 8px #e329ff44;
+    }
+    .plan-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        text-align: center;
+    }
+    .plan-price {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #e329ff;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .plan-desc {
+        color: #bdb4e6;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+        width: 100%;
+    }
+    .plan-features li {
+        color: #fff;
+        font-size: 1rem;
+        margin-bottom: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+    }
+    .plan-features i {
+        color: #e329ff;
+        font-size: 1.1rem;
+    }
+    .plan-btn {
+        background: linear-gradient(90deg, #e329ff, #a855f7);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 999px;
+        padding: 0.9rem 2.5rem;
+        margin-top: auto;
+        box-shadow: 0 2px 12px #e329ff33;
+        transition: background 0.3s, transform 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+    }
+    .plan-btn:hover {
+        background: linear-gradient(90deg, #a855f7, #e329ff);
+        transform: translateY(-3px) scale(1.04);
+    }
+    /* FAQ améliorée */
+    .faq-section {
+        max-width: 900px;
+        margin: 0 auto 3rem auto;
+        padding: 0 1rem;
+    }
+    .faq-title {
+        font-size: 2.3rem;
+        font-weight: 900;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        letter-spacing: -1px;
+        background: linear-gradient(90deg, #fff, #a855f7 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .faq-list {
+        background: rgba(20,20,30,0.95);
+        border-radius: 2rem;
+        box-shadow: 0 8px 32px 0 #a855f755;
+        padding: 2.5rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .faq-item {
+        margin-bottom: 0;
+        border-bottom: 1px solid #2d2d3a;
+        padding-bottom: 1.5rem;
+        transition: background 0.2s;
+    }
+    .faq-item:last-child {
+        border-bottom: none;
+    }
+    .faq-q {
+        color: #e329ff;
+        font-weight: 700;
+        font-size: 1.18rem;
+        cursor: pointer;
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: color 0.2s;
+        gap: 1rem;
+    }
+    .faq-q i {
+        transition: transform 0.3s;
+    }
+    .faq-item.open .faq-q i {
+        transform: rotate(180deg);
+    }
+    .faq-q:hover {
+        color: #a855f7;
+    }
+    .faq-a {
+        color: #bdb4e6;
+        font-size: 1.08rem;
+        margin-left: 2.2rem;
+        margin-top: 0.2rem;
+        display: none;
+        line-height: 1.7;
+        transition: all 0.3s;
+    }
+    .faq-item.open .faq-a {
+        display: block;
+        animation: fadeInFaq 0.4s;
+    }
+    @keyframes fadeInFaq {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 600px) {
+        .faq-list { padding: 1rem; }
+        .faq-title { font-size: 1.3rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="relative py-20 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+        <div class="dot-pattern w-full h-full"></div>
+        <div class="home-glow" style="top: -100px; left: -100px;"></div>
+        <div class="home-glow" style="bottom: -120px; right: -120px;"></div>
+    </div>
+    <div class="container mx-auto px-6 lg:px-8 relative z-10">
+        <h1 class="pricing-title">Choose Your Plan</h1>
+        <p class="pricing-subtitle">Simple, transparent pricing. No hidden fees. Start mastering your tracks today.</p>
+        <div class="plans-grid">
+            <div class="plan-card">
+                <div class="plan-title">Starter</div>
+                <div class="plan-price">5€</div>
+                <div class="plan-desc">Perfect to try Masterify and master your first tracks.</div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>5 mastering credits</li>
+                    <li><i class="fas fa-check"></i>All AI presets</li>
+                    <li><i class="fas fa-check"></i>MP3 downloads</li>
+                    <li><i class="fas fa-times" style="color:#555"></i><span style="color:#bdb4e6;">Priority processing</span></li>
+                </ul>
+                <form action="/auth" method="GET">
+                    <button type="submit" class="plan-btn">Get Started</button>
+                </form>
+            </div>
+            <div class="plan-card popular">
+                <div class="plan-badge">Most Popular</div>
+                <div class="plan-title">Pro</div>
+                <div class="plan-price">15€</div>
+                <div class="plan-desc">Best value for regular mastering and more flexibility.</div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>20 mastering credits</li>
+                    <li><i class="fas fa-check"></i>All AI presets</li>
+                    <li><i class="fas fa-check"></i>MP3 & WAV downloads</li>
+                    <li><i class="fas fa-check"></i>Priority processing</li>
+                </ul>
+                <form action="/auth" method="GET">
+                    <button type="submit" class="plan-btn">Get Pro</button>
+                </form>
+            </div>
+            <div class="plan-card">
+                <div class="plan-title">Studio</div>
+                <div class="plan-price">30€</div>
+                <div class="plan-desc">For professionals and studios who need unlimited power.</div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i>Unlimited mastering credits</li>
+                    <li><i class="fas fa-check"></i>Unlimited mastering</li>
+                    <li><i class="fas fa-check"></i>All AI presets</li>
+                    <li><i class="fas fa-check"></i>MP3 & WAV downloads</li>
+                    <li><i class="fas fa-check"></i>Priority processing</li>
+                </ul>
+                <form action="/auth" method="GET">
+                    <button type="submit" class="plan-btn">Get Studio</button>
+                </form>
+            </div>
+        </div>
+        <div class="faq-section mt-16">
+            <h2 class="faq-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-q">What is a mastering credit? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">A mastering credit allows you to process one audio file through our AI mastering engine. Each credit = one mastered track.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Can I use my credits for any genre? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">Yes! All plans include access to every AI preset, whatever your style.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Do my credits expire? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">No, your credits never expire. Use them whenever you want.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">What formats can I download? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">MP3 (all plans) and WAV (Studio plan).</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Can I upgrade my plan later? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-a">Of course! You can upgrade at any time and keep your remaining credits.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+// FAQ accordion
+const faqs = document.querySelectorAll('.faq-item');
+faqs.forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+        item.classList.toggle('open');
+    });
+});
+</script>
+{% endblock %}
+
+{% block scripts %}{% endblock %}

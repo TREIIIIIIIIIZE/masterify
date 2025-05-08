@@ -1,0 +1,41 @@
+/* Masquer les anciens presets */
+.preset-card[data-preset="trap"],
+.preset-card[data-preset="lofi"],
+.preset-card[data-preset="clean"],
+.preset-card[data-preset="warm"] {
+    display: none !important;
+}
+
+/* S'assurer que la grille n'a que 2 éléments */
+.preset-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .preset-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Styliser nos deux présets */
+.preset-card[data-preset="masterify_v1"],
+.preset-card[data-preset="masterify_ia"] {
+    display: block !important;
+    background-color: rgba(20, 20, 20, 0.5);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Textes en français */
+body .preset-card[data-preset="trap"] + .preset-card[data-preset="lofi"] + .preset-card[data-preset="clean"] + .preset-card[data-preset="warm"] ~ .mt-12 button,
+#process-button {
+    content: "MASTERISER VOTRE MORCEAU" !important;
+} 

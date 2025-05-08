@@ -1,0 +1,43 @@
+# Environnement virtuel
+venv/
+env/
+ENV/
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Fichiers de logs
+*.log
+
+# Fichiers macOS
+.DS_Store
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*.swp
+
+# Fichiers d'IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers locaux de configuration
+.env
+.env.local
+
+# Répertoires de fichiers audio
+temp_uploads/
+attached_assets/
+user_references/
+
+# Base de données SQLite
+instance/
